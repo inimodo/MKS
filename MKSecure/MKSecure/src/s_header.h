@@ -1,6 +1,10 @@
 #pragma once
 #include <Windows.h>
 #include <malloc.h>
+#include <Lmcons.h>
+#include <iostream>
+
+#define LOG(X) std::cout << X << std::endl
 
 #define _USEREGISTER
 #define __CC __stdcall
@@ -19,45 +23,58 @@
 #define W_COLOR_CMDMSG (FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
 
 typedef unsigned short ushort;
-typedef char* charp;
+typedef const LPSTR c_LPSTR;
 namespace text 
 {
+	extern inline int __CC vTermLength(c_LPSTR);
+
 	class cStr
 	{
-	private:
-		charp c_pStr;
-		ushort s_Length;
 	public:
-		void __CC vSet(const charp);
-		void __CC vClean();
-		void __CC vAppend(cStr *);
-		charp __CC vGet();
-	};
+		ushort s_Length{0};
+		LPSTR c_pStr{0};
 
-	static cStr c_LUser;
-	const static char C_TXT_PREFIX = '@';
-	const static char C_TXT_WRONGPWD[] = "INVALID KEY\n";
-	const static char C_TXT_WRONGPWD[] = "KEY REQUEST\n";
-	const static char C_TXT_HIDDEN = '*';
-	const static char C_TXT_KNOWN = '_';
-	const static char C_TXT_SPACER = '-';
-	const static char C_TXT_ENDL = '\n';
-	extern void __CC vReaduser();
+		cStr(c_LPSTR);
+		cStr();
+
+		void __CC vSet(c_LPSTR);
+		void __CC vSet(cStr);
+		void __CC vClean();
+
+		void __CC vAppend(cStr *);
+		void __CC vAppend(cStr );
+		void __CC vAppend(c_LPSTR);
+
+		operator ushort() {
+			return s_Length;
+		}
+		operator LPSTR() {
+			return c_pStr;
+		}
+	};
 }
+
+#define _MKSS_LOCKED 0x2FF
+#define _MKSS_LOGGIN 0x2FE
+#define _MKSS_UNLOCK 0x2EE
+
+#define _MKSS_FAILED 0x10E
+#define _MKSS_UNKNOW 0x1E0
+#define _MKSS_NONE   0x100
 
 namespace mks {
 
-	const static unsigned short S_KEY = 123456;
-	const static char S_FILE[] = "cfile.key";
-	static char s_Startup[];
+	const static ushort S_KEY = 123456;
 
-	static class cConsole
+	class cConsole
 	{
-	private:
-		static HANDLE o_HwndOutput;
-		static HANDLE o_HwndInput;
 	public:
+		HANDLE o_HwndOutput;
+		HANDLE o_HwndInput;
+
 		void __CC vLoadHandle();
+		void __CC vGetWinUser();
+		text::cStr c_LUser;
 	};
 	class cPassword
 	{
@@ -71,13 +88,20 @@ namespace mks {
 		void __CC vRequestCheck(char&);
 		void __CC vPushValue(char);
 	};
-	class cIBuffer : public cConsole 
+	class cIOBuffer : public cConsole 
 	{
-		
+		public:
+		text::cStr c_RequestEntry;
+		void __CC vRequestInput(DWORD);
+		void __CC vProcessMsg(DWORD);
 	};
-
-	static cIBuffer o_Buffer;
-
+	class cIOSystem : public cPassword
+	{
+	public:
+		DWORD dw_State{ _MKSS_LOCKED };
+		DWORD dw_Msg{ _MKSS_NONE };
+		void __CC vProcessRequest(text::cStr *);
+	};
 	extern void __CC vSetup();
 	extern char __CC vLoop();
 	extern int __CC vCleanup();
