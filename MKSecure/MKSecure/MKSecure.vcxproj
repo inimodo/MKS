@@ -123,8 +123,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\s_io.cpp" />
     <ClCompile Include="src\s_console.cpp" />
-    <ClCompile Include="src\s_logic.cpp" />
+    <ClCompile Include="src\s_password.cpp" />
     <ClCompile Include="src\s_string.cpp" />
     <ClCompile Include="src\s_stringsource.cpp" />
     <ClCompile Include="src\s_windows.cpp" />
@@ -132,7 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\s_header.h" />
-    <ClInclude Include="src\s_stringsource.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

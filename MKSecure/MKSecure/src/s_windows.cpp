@@ -1,30 +1,40 @@
 #include "s_header.h"
 
-mks::cIOBuffer mks_IOBuffer;
-mks::cIOSystem mks_IOSystem;
+cIOBuffer mks_IOBuffer;
+cIOSystem mks_IOSystem;
+
+SKEY k_Keylist[_MKSS_KEYS];
 
 void __CC 
-mks::vSetup()
+vSetup()
 {
+	mks_IOBuffer.vSetupBuffer();
+	mks_IOSystem.vSetupBuffer();
+
 	mks_IOBuffer.vLoadHandle();
 	mks_IOBuffer.vGetWinUser();
+	mks_IOBuffer.vGetWinDir();
+
+
 	LOG((LPSTR)mks_IOBuffer.c_LUser);
+	LOG((LPSTR)mks_IOBuffer.c_LDir);
 }
 char __CC
-mks::vLoop()
+vLoop()
 {
-	mks_IOSystem.vProcessRequest(&mks_IOBuffer.c_RequestEntry);
+	mks_IOSystem.vProcessRawKey();
+	mks_IOSystem.vProcessKey();
 	return 1;
 }
 int __CC
-mks::vCleanup()
+vCleanup()
 {
 	return 1;
 }
 char __CC
-mks::vCatchloop()
+vCatchloop()
 {
-	mks_IOBuffer.vProcessMsg(mks_IOSystem.dw_Msg);
-	mks_IOBuffer.vRequestInput(mks_IOSystem.dw_State);
+	mks_IOBuffer.vProcessOutput(mks_IOSystem.dw_Msg);
+	mks_IOBuffer.vRequestInput(&mks_IOSystem.c_RawKey);
 	return 1;
 }

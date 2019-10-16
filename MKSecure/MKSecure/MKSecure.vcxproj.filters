@@ -18,9 +18,6 @@
     <ClCompile Include="src\s_windows.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\s_logic.cpp">
-      <Filter>Quelldateien</Filter>
-    </ClCompile>
     <ClCompile Include="src\s_main.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
@@ -30,15 +27,18 @@
     <ClCompile Include="src\s_stringsource.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
+    <ClCompile Include="src\s_password.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\s_io.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
     <ClCompile Include="src\s_console.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\s_header.h">
-      <Filter>Headerdateien</Filter>
-    </ClInclude>
-    <ClInclude Include="src\s_stringsource.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

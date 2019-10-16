@@ -1,10 +1,10 @@
 #include "s_header.h"
 int main()
 {
-	mks::vSetup();
+	vSetup();
 	do
 	{
-		mks::vCatchloop();
-	} while (mks::vLoop());
-	return mks::vCleanup();
+		vCatchloop();
+	} while (vLoop());
+	return vCleanup();
 }
