@@ -1,17 +1,17 @@
 #include"s_header.h"
 
 void __CC
-cPassword::vFileread()
+cFunction::vFileread()
 {
 
 }
 void __CC
-cPassword::vRequestCheck(char& c_Check)
+cFunction::vRequestCheck(char& c_Check)
 {
 
 }
 void __CC
-cPassword::vPushValue(char c_Value)
+cFunction::vPushValue(char c_Value)
 {
 
 }
