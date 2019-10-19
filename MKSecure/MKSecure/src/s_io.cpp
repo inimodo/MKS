@@ -24,7 +24,7 @@ cIOSystem::vProcessRawKey()
 			if (c_RawKey.c_pStr[s_Index] == C_TXT_ENDL) {
 				break;;
 			}
-			if (c_RawKey.c_pStr[s_Index] == k_Keylist[s_KeyIndex].c_Key[s_Index]) {				
+			if (c_RawKey.c_pStr[s_Index] == k_Funclist[s_KeyIndex].k_Key.c_Key[s_Index]) {				
 				++this->dw_KeyLength;
 			}		
 		}
@@ -34,18 +34,56 @@ cIOSystem::vProcessRawKey()
 			return;
 		}
 	}
+
 }
 void __CC
 cIOSystem::vProcessKey()
 {
 	this->dw_Msg = _MKSS_FAILED;
-	if (this->dw_Key != _MKSS_UNKNOW) 
+	if (this->dw_Key != _MKSS_UNKNOW && this->dw_Key != _MKSS_NONE)
 	{
-
+		if (k_Funclist[this->dw_Key].f_Register(&k_Funclist[this->dw_Key]) == TRUE) 
+		{
+			this->dw_Msg = _MKSS_GOOD;
+		}
+		else
+		{
+			this->dw_Msg = _MKSS_FAILED;
+		}
 	}
 }
 void __CC
 cIOSystem::vProcessMsg()
 {
+	if (this->dw_Key == _MKSS_UNKNOW)
+	{
+		this->vSetTextColor(_MKSC_COLOR_UNKNOW);
+		this->vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+	}
+	else if (this->dw_Key != _MKSS_NONE)
+	{
+		if (this->dw_Msg == _MKSS_FAILED)
+		{
+			this->vSetTextColor(_MKSC_COLOR_FAILED);
+			this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+		}
+		else
+			if (this->dw_Msg == _MKSS_GOOD)
+			{
+				this->vSetTextColor(_MKSC_COLOR_GOOD);
+				this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+			}
+	}
+	
+
+	this->vSetTextColor(_MKSC_COLOR_CMD);
+	this->vWriteOutput((c_LPSTR)C_TXT_IN, _MKSS_KEYS-1, &dw_KeyLength);
+
+	this->vSetTextColor(_MKSC_COLOR_NAME);
+	this->vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, &dw_KeyLength);
+
+	this->vSetTextColor(_MKSC_COLOR_CMD);
+	this->vWriteOutput((c_LPSTR)C_TXT_PREFIX, _MKSS_KEYS, &dw_KeyLength);
+	this->vSetTextColor(_MKSC_COLOR_INPUT);
 
 }

@@ -11,20 +11,21 @@
 #define __ST __cdecl
 #define __REG register
 
-extern char C_TXT_PREFIX;
-extern char C_TXT_WRONGPWD[];
-extern char C_TXT_REQUESTPWD[];
-extern char C_TXT_HIDDEN;
-extern char C_TXT_KNOWN;
+typedef unsigned short ushort;
+typedef const LPSTR c_LPSTR;
+
+#define _MKSS_REGFUNCTIONS 4
+#define _MKSS_KEYS 2
+#define _MKSS_MSGSIZE 16
+#define _MKSS_REGFUNCTIONSIZE 6
+
+extern char C_TXT_PREFIX[_MKSS_KEYS];
+
 extern char C_TXT_SPACER;
 extern char C_TXT_ENDL;
 extern char C_FILE[];
-extern char C_TXT_IN;
-extern char C_TXT_OUT;
-
-#define _MKSS_REGFUNCTIONS 4
-#define _MKSS_MSGSIZE 16
-#define _MKSS_REGFUNCTIONSIZE 6
+extern char C_TXT_IN[_MKSS_KEYS];
+extern char C_MKSS_K_UNKNOW[_MKSS_MSGSIZE];
 
 #define _MKSS_K_LOCK   0x00
 extern char C_MKSS_K_LOCK[_MKSS_REGFUNCTIONSIZE];
@@ -46,8 +47,8 @@ extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
 extern char C_MKSS_K_WATCH_FAILED[_MKSS_MSGSIZE];
 extern char C_MKSS_K_WATCH_GOOD[_MKSS_MSGSIZE];
 #define _MKSS_UNKNOW 0xEE
-#define _MKSS_NONE   0xFF
 
+#define _MKSS_NONE   0xAFA
 #define _MKSS_GOOD	 0xAAA
 #define _MKSS_FAILED 0xFFF
 
@@ -63,9 +64,9 @@ struct sKey {
 	char* c_Msg_Good;
 	char* c_Msg_Failed;
 };
-extern SKEY k_Keylist[_MKSS_REGFUNCTIONS];
 
-typedef cFunction SFUNC;
+
+typedef class cFunction SFUNC;
 class cFunction
 {
 private:
@@ -73,26 +74,36 @@ private:
 	const static char c_Cascadesize = 4;
 	const static ushort s_Code_Entry[c_Cascades];
 	const static ushort s_Code_Public[c_Cascades];
-
+	
 	static void __CC vFileread();
 	static void __CC vRequestCheck(char&);
 	static void __CC vPushValue(char);
 public:
-	static BOOL b_State_Locked, b_State_Watcher;
-	void(*f_Register)(void*);
+
+	SKEY k_Key;
+	static BOOL b_State_Locked;
+	static BOOL b_State_Watcher;
+	BOOL (*f_Register)(SFUNC*);
 };
 extern SFUNC k_Funclist[_MKSS_REGFUNCTIONS];
+
+extern BOOL
+vRegister_break(SFUNC* k_Register);
+extern BOOL
+vRegister_login(SFUNC* k_Register);
+extern BOOL
+vRegister_watch(SFUNC* k_Register);
+extern BOOL
+vRegister_lttry(SFUNC* k_Register);
+
 #define _BUFFER_S 64
 
-#define W_COLOR_ERROR ( FOREGROUND_RED | FOREGROUND_INTENSITY)
-#define W_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
-#define W_COLOR_PATH (FOREGROUND_BLUE  |FOREGROUND_GREEN| FOREGROUND_INTENSITY)
-#define W_COLOR_OPER (FOREGROUND_BLUE  | FOREGROUND_INTENSITY)
-#define W_COLOR_FEEDB (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
-#define W_COLOR_CMDMSG (FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
-
-typedef unsigned short ushort;
-typedef const LPSTR c_LPSTR;
+#define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
+#define _MKSC_COLOR_UNKNOW ( FOREGROUND_RED | FOREGROUND_GREEN)
+#define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
+#define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
+#define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED)
+#define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
 
 extern inline int __CC vTermLength(c_LPSTR);
 
@@ -133,7 +144,9 @@ public:
 	BOOL __ST vGetWinUser();
 	BOOL __ST vGetWinDir();
 
-	int __CC vReadInput(cStr*, LPDWORD );
+	BOOL __CC vReadInput(cStr*, LPDWORD );
+	BOOL __CC vWriteOutput(c_LPSTR,DWORD, LPDWORD );
+	BOOL __CC vSetTextColor(WORD );
 	cStr c_LUser;
 	cStr c_LDir;
 };
@@ -144,7 +157,7 @@ class cIOSystem : public cConsole
 
 	DWORD dw_KeyLength{0};
 	cStr c_RawKey;
-	DWORD dw_Key{ _MKSS_K_LOCK };
+	DWORD dw_Key{ _MKSS_NONE };
 	void __CC vProcessRawKey();
 
 	DWORD dw_Msg{ _MKSS_NONE };

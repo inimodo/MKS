@@ -125,7 +125,7 @@
   <ItemGroup>
     <ClCompile Include="src\s_io.cpp" />
     <ClCompile Include="src\s_console.cpp" />
-    <ClCompile Include="src\s_password.cpp" />
+    <ClCompile Include="src\s_registerfunc.cpp" />
     <ClCompile Include="src\s_string.cpp" />
     <ClCompile Include="src\s_stringsource.cpp" />
     <ClCompile Include="src\s_mainloop.cpp" />

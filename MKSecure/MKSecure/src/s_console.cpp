@@ -25,8 +25,18 @@ cConsole::vGetWinDir()
 	return TRUE;
 }
 
-int __CC 
+BOOL __CC 
 cConsole::vReadInput(cStr * c_Buffer,LPDWORD dw_pLength) 
 {
 	return ReadConsoleA(this->o_HwndInput,c_Buffer->c_pStr,c_Buffer->s_Length,dw_pLength,NULL);
+}
+BOOL __CC
+cConsole::vSetTextColor(WORD w_Color) 
+{
+	return SetConsoleTextAttribute(this->o_HwndOutput, w_Color);
+}
+BOOL __CC
+cConsole::vWriteOutput(c_LPSTR c_pMsg, DWORD dw_Length, LPDWORD dw_OutLength)
+{
+	return WriteConsoleA(this->o_HwndOutput, c_pMsg, dw_Length, dw_OutLength, NULL);
 }
