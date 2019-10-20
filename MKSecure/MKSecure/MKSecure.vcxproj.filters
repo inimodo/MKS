@@ -30,10 +30,10 @@
     <ClCompile Include="src\s_console.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\s_mainloop.cpp">
+    <ClCompile Include="src\s_registerfunc.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\s_registerfunc.cpp">
+    <ClCompile Include="src\s_inline.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>

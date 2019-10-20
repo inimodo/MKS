@@ -128,7 +128,7 @@
     <ClCompile Include="src\s_registerfunc.cpp" />
     <ClCompile Include="src\s_string.cpp" />
     <ClCompile Include="src\s_stringsource.cpp" />
-    <ClCompile Include="src\s_mainloop.cpp" />
+    <ClCompile Include="src\s_inline.cpp" />
     <ClCompile Include="src\s_main.cpp" />
   </ItemGroup>
   <ItemGroup>

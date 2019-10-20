@@ -18,24 +18,36 @@ vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
 	DWORD dw_TempSize = 0;
 	ULLI ull_CN[2] = {0,0};
 	char c_CN;
-	for (int i_CNP = 0; i_CNP < 2; i_CNP++)
+	for (char c_CNP = 0; c_CNP < 2; c_CNP++)
 	{
-
-		io_Sys->vWriteOutput(C_MKSS_K_LOGIN_CN, _MKSS_MSGSIZE, &dw_TempSize);
+		io_Sys->vWriteOutput(C_MKSS_K_LOGIN_CN, 7, &dw_TempSize);
 		for (char c_Index = 0; c_Index < _MKSS_BUFFERSIZE; c_Index++)
 		{
 			c_CN = _getch();
-			if (c_CN == 13) {
+			if (c_CN == 13) 
+			{
+				if (c_Index <= 1) {
+					ull_CN[c_CNP] = 0;
+				}
 				io_Sys->vBreak();
 				break;
 			}
-
-//			ull_CN[i_CNP] += (c_CN[i_CNP].c_pStr[c_Index] - 48)
-
+			if (c_CN <= 57 && c_CN >= 48) 
+			{			
+				ull_CN[c_CNP] += (c_CN - 48) * vTenth(c_Index);
+			}
+			else 
+			{
+				if (c_Index <= 1) {
+					ull_CN[c_CNP] = 0;
+				}
+				io_Sys->vBreak();
+				break;
+			}
 			_putch(C_MKSS_K_LOGIN_HIDER);
-		}
-		
+		}	
 	}
+
 	if (ull_CN[0] * ull_CN[1] == _MKS_REGKEY) 
 	{
 		SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] = TRUE;
@@ -47,8 +59,12 @@ vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
 BOOL 
 vRegister_watch(SFUNC* k_Register, IOSYS* io_Sys)
 {
+	if (SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] == TRUE) 
+	{
+		SFUNC::b_pStateBuffer[_MKSR_REGISTER_WATCHING] = TRUE;
+		return TRUE;;
+	}
 	return FALSE;
-
 }
 BOOL 
 vRegister_lttry(SFUNC* k_Register, IOSYS* io_Sys)

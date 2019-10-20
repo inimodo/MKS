@@ -16,7 +16,7 @@ typedef unsigned short ushort;
 typedef unsigned long long int ULLI;
 typedef const LPSTR c_LPSTR;
 
-#define _MKS_REGKEY (ULLI)25
+#define _MKS_REGKEY (ULLI)(137*173)
 
 #define _MKSR_REGFUNCTIONS 4
 #define _MKSR_REGISTERS 2
@@ -91,6 +91,7 @@ struct sKey {
 #define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
 
 extern inline int __CC vTermLength(c_LPSTR);
+extern inline ULLI __CC vTenth(char);
 
 typedef class CSTR CSTR;
 class CSTR

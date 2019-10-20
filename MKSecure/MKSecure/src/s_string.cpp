@@ -1,15 +1,5 @@
 #include "s_header.h"
 
-int __CC 
-vTermLength(c_LPSTR c_Text) 
-{
-	__REG ushort s_rLen = 0;
-	while (c_Text[s_rLen] != C_TXT_ENDL)
-	{
-		++s_rLen;
-	}
-	return s_rLen;
-}
 CSTR::CSTR(c_LPSTR c_pInput)
 	: s_Length(0)
 {this->vSet(c_pInput);}
