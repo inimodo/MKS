@@ -10,22 +10,27 @@ vTermLength(c_LPSTR c_Text)
 	}
 	return s_rLen;
 }
-cStr::cStr(c_LPSTR c_pInput)
+CSTR::CSTR(c_LPSTR c_pInput)
 	: s_Length(0)
 {this->vSet(c_pInput);}
 
-cStr::cStr()
+CSTR::CSTR()
 	: s_Length(0), c_pStr(0)
 {}
+CSTR::CSTR(ushort s_Length)
+	: s_Length(s_Length), c_pStr(0)
+{
+	this->vSet(s_Length);
+}
 void __CC
-cStr::vSet(ushort s_Length)
+CSTR::vSet(ushort s_Length)
 {
 	this->vClean();
 	this->c_pStr = (LPSTR)malloc(s_Length+1);
 	this->s_Length = s_Length;
 }
 void __CC
-cStr::vSet(c_LPSTR c_pText) 
+CSTR::vSet(c_LPSTR c_pText) 
 {
 	this->vClean();
 	this->s_Length = vTermLength(c_pText);
@@ -39,7 +44,7 @@ cStr::vSet(c_LPSTR c_pText)
 	}
 }
 void __CC
-cStr::vAppend(cStr c_pAdd)
+CSTR::vAppend(CSTR c_pAdd)
 {
 	if (c_pAdd.s_Length == 0)return;
 	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd.s_Length);
@@ -58,7 +63,7 @@ cStr::vAppend(cStr c_pAdd)
 	}
 }
 void __CC
-cStr::vAppend(cStr * c_pAdd)
+CSTR::vAppend(CSTR * c_pAdd)
 {
 	if (c_pAdd->s_Length == 0)return;
 	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd->s_Length + 1);
@@ -77,7 +82,7 @@ cStr::vAppend(cStr * c_pAdd)
 	}
 }
 void __CC
-cStr::vAppend(c_LPSTR c_pAdd)
+CSTR::vAppend(c_LPSTR c_pAdd)
 {
 	if (c_pStr == nullptr)return;
 	ushort s_AddLen = vTermLength(c_pAdd);
@@ -98,7 +103,7 @@ cStr::vAppend(c_LPSTR c_pAdd)
 	}
 }
 void __CC 
-cStr::vClean()
+CSTR::vClean()
 {
 	if (this->s_Length != 0) {
 		free(this->c_pStr);

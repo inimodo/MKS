@@ -5,7 +5,7 @@ cIOSystem::vSetupBuffer()
 {
 	this->c_LUser.vSet(UNLEN);
 	this->c_LDir.vSet(MAX_PATH);
-	this->c_RawKey.vSet(_BUFFER_S);
+	this->c_RawKey.vSet(_MKSS_BUFFERSIZE);
 }
 void __CC 
 cIOSystem::vProcessRawKey()
@@ -16,7 +16,7 @@ cIOSystem::vProcessRawKey()
 	{	
 		return;
 	}
-	for (ushort s_KeyIndex = 0; s_KeyIndex < _MKSS_REGFUNCTIONS; s_KeyIndex++)
+	for (ushort s_KeyIndex = 0; s_KeyIndex < _MKSR_REGFUNCTIONS; s_KeyIndex++)
 	{
 		this->dw_KeyLength = 0;
 		for (ushort s_Index = 0; s_Index < _MKSS_REGFUNCTIONSIZE; s_Index++)
@@ -39,10 +39,11 @@ cIOSystem::vProcessRawKey()
 void __CC
 cIOSystem::vProcessKey()
 {
+	this->vSetTextColor(_MKSC_COLOR_CMD);
 	this->dw_Msg = _MKSS_FAILED;
 	if (this->dw_Key != _MKSS_UNKNOW && this->dw_Key != _MKSS_NONE)
 	{
-		if (k_Funclist[this->dw_Key].f_Register(&k_Funclist[this->dw_Key]) == TRUE) 
+		if (k_Funclist[this->dw_Key].f_Register(&k_Funclist[this->dw_Key],this) == TRUE) 
 		{
 			this->dw_Msg = _MKSS_GOOD;
 		}
@@ -80,7 +81,7 @@ cIOSystem::vProcessMsg()
 	this->vWriteOutput((c_LPSTR)C_TXT_IN, _MKSS_KEYS-1, &dw_KeyLength);
 
 	this->vSetTextColor(_MKSC_COLOR_NAME);
-	this->vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, &dw_KeyLength);
+	this->vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length, &dw_KeyLength);
 
 	this->vSetTextColor(_MKSC_COLOR_CMD);
 	this->vWriteOutput((c_LPSTR)C_TXT_PREFIX, _MKSS_KEYS, &dw_KeyLength);

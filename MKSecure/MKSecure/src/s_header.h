@@ -4,6 +4,7 @@
 #include <Lmcons.h>
 #include <iostream>
 #include <direct.h>
+#include <conio.h>
 
 #define LOG(X) std::cout << X << std::endl
 
@@ -12,20 +13,32 @@
 #define __REG register
 
 typedef unsigned short ushort;
+typedef unsigned long long int ULLI;
 typedef const LPSTR c_LPSTR;
 
-#define _MKSS_REGFUNCTIONS 4
-#define _MKSS_KEYS 2
-#define _MKSS_MSGSIZE 16
+#define _MKS_REGKEY (ULLI)25
+
+#define _MKSR_REGFUNCTIONS 4
+#define _MKSR_REGISTERS 2
+
+#define _MKSR_REGISTER_UNLOCKED 0
+#define _MKSR_REGISTER_WATCHING 1
+
 #define _MKSS_REGFUNCTIONSIZE 6
+#define _MKSS_KEYS 2
+#define _MKSS_MSGSIZE 20
 
 extern char C_TXT_PREFIX[_MKSS_KEYS];
+extern char C_TXT_BREAK[_MKSS_KEYS];
 
-extern char C_TXT_SPACER;
 extern char C_TXT_ENDL;
+extern char C_TXT_NEWL;
+
 extern char C_FILE[];
 extern char C_TXT_IN[_MKSS_KEYS];
+
 extern char C_MKSS_K_UNKNOW[_MKSS_MSGSIZE];
+extern char C_MKSS_K_PERM[_MKSS_MSGSIZE];
 
 #define _MKSS_K_LOCK   0x00
 extern char C_MKSS_K_LOCK[_MKSS_REGFUNCTIONSIZE];
@@ -33,9 +46,12 @@ extern char C_MKSS_K_LOCK_FAILED[_MKSS_MSGSIZE];
 extern char C_MKSS_K_LOCK_GOOD[_MKSS_MSGSIZE];
 
 #define _MKSS_K_LOGGIN 0x01
-extern char C_MKSS_LOGIN[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_LOGIN_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_LOGIN_GOOD[_MKSS_MSGSIZE];
+extern char C_MKSS_K_LOGIN[_MKSS_REGFUNCTIONSIZE];
+extern char C_MKSS_K_LOGIN_FAILED[_MKSS_MSGSIZE];
+extern char C_MKSS_K_LOGIN_GOOD[_MKSS_MSGSIZE];
+
+extern char C_MKSS_K_LOGIN_CN[_MKSS_MSGSIZE];
+extern char C_MKSS_K_LOGIN_HIDER;
 
 #define _MKSS_K_LTTRY  0x02
 extern char C_MKSS_K_LTTRY[_MKSS_REGFUNCTIONSIZE];
@@ -65,65 +81,36 @@ struct sKey {
 	char* c_Msg_Failed;
 };
 
-
-typedef class cFunction SFUNC;
-class cFunction
-{
-private:
-	const static char c_Cascades = 5;
-	const static char c_Cascadesize = 4;
-	const static ushort s_Code_Entry[c_Cascades];
-	const static ushort s_Code_Public[c_Cascades];
-	
-	static void __CC vFileread();
-	static void __CC vRequestCheck(char&);
-	static void __CC vPushValue(char);
-public:
-
-	SKEY k_Key;
-	static BOOL b_State_Locked;
-	static BOOL b_State_Watcher;
-	BOOL (*f_Register)(SFUNC*);
-};
-extern SFUNC k_Funclist[_MKSS_REGFUNCTIONS];
-
-extern BOOL
-vRegister_break(SFUNC* k_Register);
-extern BOOL
-vRegister_login(SFUNC* k_Register);
-extern BOOL
-vRegister_watch(SFUNC* k_Register);
-extern BOOL
-vRegister_lttry(SFUNC* k_Register);
-
-#define _BUFFER_S 64
+#define _MKSS_BUFFERSIZE 64
 
 #define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
 #define _MKSC_COLOR_UNKNOW ( FOREGROUND_RED | FOREGROUND_GREEN)
 #define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
 #define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
-#define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED)
+#define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
 #define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
 
 extern inline int __CC vTermLength(c_LPSTR);
 
-class cStr
+typedef class CSTR CSTR;
+class CSTR
 {
 public:
 	ushort s_Length{0};
 	LPSTR c_pStr{0};
 
-	cStr(c_LPSTR);
-	cStr();
+	CSTR(c_LPSTR);
+	CSTR();
+	CSTR(ushort);
 
 	void __CC vSet(c_LPSTR);
-	void __CC vSet(cStr);
+	void __CC vSet(CSTR);
 	void __CC vSet(ushort);
 
 	void __CC vClean();
 
-	void __CC vAppend(cStr *);
-	void __CC vAppend(cStr );
+	void __CC vAppend(CSTR *);
+	void __CC vAppend(CSTR );
 	void __CC vAppend(c_LPSTR);
 
 	operator ushort() {
@@ -144,19 +131,25 @@ public:
 	BOOL __ST vGetWinUser();
 	BOOL __ST vGetWinDir();
 
-	BOOL __CC vReadInput(cStr*, LPDWORD );
+	BOOL __CC vReadInput(CSTR*, LPDWORD );
 	BOOL __CC vWriteOutput(c_LPSTR,DWORD, LPDWORD );
+	BOOL __CC vGetConsoleInfo();
 	BOOL __CC vSetTextColor(WORD );
-	cStr c_LUser;
-	cStr c_LDir;
+	BOOL __CC vBreak();
+
+
+	CSTR c_LUser;
+	CSTR c_LDir;
+
 };
+typedef class cIOSystem IOSYS;
 class cIOSystem : public cConsole 
 {
 	public:
 	void __ST vSetupBuffer();
 
 	DWORD dw_KeyLength{0};
-	cStr c_RawKey;
+	CSTR c_RawKey;
 	DWORD dw_Key{ _MKSS_NONE };
 	void __CC vProcessRawKey();
 
@@ -165,4 +158,29 @@ class cIOSystem : public cConsole
 	void __CC vProcessMsg();
 };
 
+typedef class cFunction SFUNC;
+class cFunction
+{
+
+	static void __CC vFileread();
+	static void __CC vRequestCheck();
+
+
+public:
+	static BOOL b_pStateBuffer[_MKSR_REGISTERS];
+	
+	SKEY k_Key;
+
+	BOOL (*f_Register)(SFUNC*, IOSYS*);
+};
+extern SFUNC k_Funclist[_MKSR_REGFUNCTIONS];
+
+extern BOOL
+vRegister_break(SFUNC*, IOSYS*);
+extern BOOL	  
+vRegister_login(SFUNC*, IOSYS*);
+extern BOOL	   
+vRegister_watch(SFUNC*, IOSYS*);
+extern BOOL	  
+vRegister_lttry(SFUNC*, IOSYS*);
 

@@ -26,7 +26,7 @@ cConsole::vGetWinDir()
 }
 
 BOOL __CC 
-cConsole::vReadInput(cStr * c_Buffer,LPDWORD dw_pLength) 
+cConsole::vReadInput(CSTR * c_Buffer,LPDWORD dw_pLength) 
 {
 	return ReadConsoleA(this->o_HwndInput,c_Buffer->c_pStr,c_Buffer->s_Length,dw_pLength,NULL);
 }
@@ -39,4 +39,17 @@ BOOL __CC
 cConsole::vWriteOutput(c_LPSTR c_pMsg, DWORD dw_Length, LPDWORD dw_OutLength)
 {
 	return WriteConsoleA(this->o_HwndOutput, c_pMsg, dw_Length, dw_OutLength, NULL);
+}
+BOOL __CC
+cConsole::vBreak()
+{
+	DWORD dw_Temp;
+	return WriteConsoleA(this->o_HwndOutput, C_TXT_BREAK, 1, &dw_Temp, NULL);
+}
+
+BOOL __CC 
+cConsole::vGetConsoleInfo()
+{
+
+	return 0;
 }

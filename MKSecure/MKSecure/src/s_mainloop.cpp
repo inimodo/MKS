@@ -1,6 +1,7 @@
 #include "s_header.h"
 
-cIOSystem mks_IOSystem;
+IOSYS mks_IOSystem;
+SFUNC k_Funclist[_MKSR_REGFUNCTIONS];
 
 
 void __CC 
@@ -15,6 +16,7 @@ vSetup()
 char __CC
 vCatchloop()
 {
+	mks_IOSystem.vGetConsoleInfo();
 
 	return 1;
 }
@@ -36,7 +38,6 @@ vCleanup()
 	return 1;
 }
 
-SFUNC k_Funclist[_MKSS_REGFUNCTIONS];
 
 void __ST
 vAssetWarmup()
@@ -47,9 +48,9 @@ vAssetWarmup()
 	k_Funclist[_MKSS_K_LOCK].k_Key.c_Msg_Failed = C_MKSS_K_LOCK_FAILED;
 
 	k_Funclist[_MKSS_K_LOGGIN].f_Register = vRegister_login;
-	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Key = C_MKSS_LOGIN;
-	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Good = C_MKSS_LOGIN_GOOD;
-	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Failed = C_MKSS_LOGIN_FAILED;
+	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Key = C_MKSS_K_LOGIN;
+	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Good = C_MKSS_K_LOGIN_GOOD;
+	k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Failed = C_MKSS_K_LOGIN_FAILED;
 
 	k_Funclist[_MKSS_K_LTTRY].f_Register = vRegister_lttry;
 	k_Funclist[_MKSS_K_LTTRY].k_Key.c_Key = C_MKSS_K_LTTRY;
