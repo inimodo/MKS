@@ -11,8 +11,9 @@ void __CC
 cIOSystem::vProcessRawKey()
 {
 	this->dw_Key = _MKSS_UNKNOW;
-	vReadInput(&this->c_RawKey, & dw_KeyLength);
-	if (this->dw_KeyLength-1 != _MKSS_REGFUNCTIONSIZE) 
+	this->vReadInput(&this->c_RawKey, & dw_KeyLength);
+	this->vBreak();
+	if (this->dw_KeyLength != _MKSS_REGFUNCTIONSIZE-1) 
 	{	
 		return;
 	}
@@ -34,12 +35,10 @@ cIOSystem::vProcessRawKey()
 			return;
 		}
 	}
-
 }
 void __CC
 cIOSystem::vProcessKey()
 {
-	this->vSetTextColor(_MKSC_COLOR_CMD);
 	this->dw_Msg = _MKSS_FAILED;
 	if (this->dw_Key != _MKSS_UNKNOW && this->dw_Key != _MKSS_NONE)
 	{
@@ -58,33 +57,23 @@ cIOSystem::vProcessMsg()
 {
 	if (this->dw_Key == _MKSS_UNKNOW)
 	{
-		this->vSetTextColor(_MKSC_COLOR_UNKNOW);
-		this->vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+		this->vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
 	}
 	else if (this->dw_Key != _MKSS_NONE)
 	{
 		if (this->dw_Msg == _MKSS_FAILED)
 		{
-			this->vSetTextColor(_MKSC_COLOR_FAILED);
-			this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+			this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
 		}
 		else
 			if (this->dw_Msg == _MKSS_GOOD)
 			{
-				this->vSetTextColor(_MKSC_COLOR_GOOD);
-				this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, &dw_KeyLength);
+				this->vWriteOutput((c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
 			}
 	}
-	
 
-	this->vSetTextColor(_MKSC_COLOR_CMD);
-	this->vWriteOutput((c_LPSTR)C_TXT_IN, _MKSS_KEYS-1, &dw_KeyLength);
-
-	this->vSetTextColor(_MKSC_COLOR_NAME);
-	this->vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length, &dw_KeyLength);
-
-	this->vSetTextColor(_MKSC_COLOR_CMD);
-	this->vWriteOutput((c_LPSTR)C_TXT_PREFIX, _MKSS_KEYS, &dw_KeyLength);
-	this->vSetTextColor(_MKSC_COLOR_INPUT);
-
+	this->vBreak();
+	this->vWriteOutput((c_LPSTR)C_TXT_IN, _MKSS_KEYS-1, _MKSC_COLOR_CMD);
+	this->vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length, _MKSC_COLOR_NAME);
+	this->vWriteOutput((c_LPSTR)C_TXT_PREFIX, _MKSS_KEYS, _MKSC_COLOR_CMD);
 }

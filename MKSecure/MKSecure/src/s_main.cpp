@@ -18,15 +18,13 @@ void __CC
 vSetup()
 {
 	mks_IOSystem.vSetupBuffer();
-
-	mks_IOSystem.vLoadHandle();
-	mks_IOSystem.vGetWinUser();
-	mks_IOSystem.vGetWinDir();
+	mks_IOSystem.vSetupHandle();
 }
 char __CC
 vCatchloop()
 {
-	mks_IOSystem.vGetConsoleInfo();
+
+	mks_IOSystem.vLoadBuffer();
 
 	return 1;
 }
@@ -45,6 +43,10 @@ vCleanup()
 	mks_IOSystem.c_LDir.vClean();
 	mks_IOSystem.c_LUser.vClean();
 	mks_IOSystem.c_RawKey.vClean();
+
+	free(mks_IOSystem.c_pOutputBuffer);
+	free(mks_IOSystem.c_pRegisterBuffer);
+
 	return 1;
 }
 

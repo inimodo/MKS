@@ -8,6 +8,14 @@
 
 #define LOG(X) std::cout << X << std::endl
 
+#define _MKSW_WIDTH 45
+#define _MKSW_HEIGHT 30
+#define _MKSW_INHEIGHT 3
+
+#define _MKSW_DEF_POSX 1
+#define _MKSW_DEF_POSY 1
+
+#define _MKSW_INDEX(CD) (int)((((COORD)CD).Y*_MKSW_WIDTH)+((COORD)CD).X)
 #define __CC __stdcall
 #define __ST __cdecl
 #define __REG register
@@ -83,6 +91,7 @@ struct sKey {
 
 #define _MKSS_BUFFERSIZE 64
 
+#define _MKSC_BACKGROUND (0)
 #define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
 #define _MKSC_COLOR_UNKNOW ( FOREGROUND_RED | FOREGROUND_GREEN)
 #define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
@@ -128,16 +137,22 @@ public:
 	HANDLE o_HwndOutput{0};
 	HANDLE o_HwndInput{0};
 
-	BOOL __ST vLoadHandle();
-	BOOL __ST vGetWinUser();
-	BOOL __ST vGetWinDir();
+	BOOL __ST vSetupHandle();
 
 	BOOL __CC vReadInput(CSTR*, LPDWORD );
-	BOOL __CC vWriteOutput(c_LPSTR,DWORD, LPDWORD );
-	BOOL __CC vGetConsoleInfo();
-	BOOL __CC vSetTextColor(WORD );
+
+	BOOL __CC vWriteOutput(c_LPSTR,DWORD, WORD );
+	BOOL __CC vWriteOutput(CHAR, WORD, BOOL );
+
+	BOOL __CC vLoadBuffer();
 	BOOL __CC vBreak();
 
+	CHAR_INFO * c_pOutputBuffer;
+	CHAR_INFO * c_pRegisterBuffer;
+
+	void __CC vBufferClear();
+	const COORD dw_Size = { _MKSW_WIDTH,_MKSW_HEIGHT };
+	COORD dw_Cursor = {1,1};
 
 	CSTR c_LUser;
 	CSTR c_LDir;
