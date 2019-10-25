@@ -1,26 +1,26 @@
 #include "s_header.h"
 
-CSTR::CSTR(c_LPSTR c_pInput)
+mks_str::mks_str(c_LPSTR c_pInput)
 	: s_Length(0)
 {this->vSet(c_pInput);}
 
-CSTR::CSTR()
+mks_str::mks_str()
 	: s_Length(0), c_pStr(0)
 {}
-CSTR::CSTR(ushort s_Length)
+mks_str::mks_str(ushort s_Length)
 	: s_Length(s_Length), c_pStr(0)
 {
 	this->vSet(s_Length);
 }
 void __CC
-CSTR::vSet(ushort s_Length)
+mks_str::vSet(ushort s_Length)
 {
 	this->vClean();
 	this->c_pStr = (LPSTR)malloc(s_Length+1);
 	this->s_Length = s_Length;
 }
 void __CC
-CSTR::vSet(c_LPSTR c_pText) 
+mks_str::vSet(c_LPSTR c_pText)
 {
 	this->vClean();
 	this->s_Length = vTermLength(c_pText);
@@ -34,7 +34,7 @@ CSTR::vSet(c_LPSTR c_pText)
 	}
 }
 void __CC
-CSTR::vAppend(CSTR c_pAdd)
+mks_str::vAppend(CSTR c_pAdd)
 {
 	if (c_pAdd.s_Length == 0)return;
 	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd.s_Length);
@@ -53,7 +53,7 @@ CSTR::vAppend(CSTR c_pAdd)
 	}
 }
 void __CC
-CSTR::vAppend(CSTR * c_pAdd)
+mks_str::vAppend(CSTR * c_pAdd)
 {
 	if (c_pAdd->s_Length == 0)return;
 	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd->s_Length + 1);
@@ -72,7 +72,7 @@ CSTR::vAppend(CSTR * c_pAdd)
 	}
 }
 void __CC
-CSTR::vAppend(c_LPSTR c_pAdd)
+mks_str::vAppend(c_LPSTR c_pAdd)
 {
 	if (c_pStr == nullptr)return;
 	ushort s_AddLen = vTermLength(c_pAdd);
@@ -93,7 +93,7 @@ CSTR::vAppend(c_LPSTR c_pAdd)
 	}
 }
 void __CC 
-CSTR::vClean()
+mks_str::vClean()
 {
 	if (this->s_Length != 0) {
 		free(this->c_pStr);

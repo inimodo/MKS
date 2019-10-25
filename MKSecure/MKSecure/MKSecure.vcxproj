@@ -123,6 +123,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\s_buffer.cpp" />
     <ClCompile Include="src\s_io.cpp" />
     <ClCompile Include="src\s_console.cpp" />
     <ClCompile Include="src\s_registerfunc.cpp" />

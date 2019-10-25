@@ -3,7 +3,7 @@
 BOOL SFUNC::b_pStateBuffer[_MKSR_REGISTERS];
 
 BOOL 
-vRegister_break(SFUNC * k_Register,IOSYS * io_Sys)
+vRegister_break(void* k_Register, BUFFER* io_Sys)
 {
 	if (SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] == TRUE) 
 	{
@@ -13,14 +13,14 @@ vRegister_break(SFUNC * k_Register,IOSYS * io_Sys)
 	return FALSE;
 }
 BOOL 
-vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
+vRegister_login(void* k_Register, BUFFER* io_Sys)
 {
 	DWORD dw_TempSize = 0;
 	ULLI ull_CN[2] = {0,0};
 	char c_CN;
 	for (char c_CNP = 0; c_CNP < 2; c_CNP++)
 	{
-		io_Sys->vWriteOutput(C_MKSS_K_LOGIN_CN, 7, _MKSC_COLOR_INPUT);
+		io_Sys[_MKSW_BUFFERS_INPUT].vWriteOutput(C_MKSS_K_LOGIN_CN, 7, _MKSC_COLOR_INPUT);
 		for (char c_Index = 0; c_Index < _MKSS_BUFFERSIZE; c_Index++)
 		{
 			c_CN = _getch();
@@ -29,7 +29,7 @@ vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
 				if (c_Index <= 1) {
 					ull_CN[c_CNP] = 0;
 				}
-				io_Sys->vBreak();
+				io_Sys[_MKSW_BUFFERS_INPUT].vBreak();
 				break;
 			}
 			if (c_CN <= 57 && c_CN >= 48) 
@@ -41,11 +41,11 @@ vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
 				if (c_Index <= 1) {
 					ull_CN[c_CNP] = 0;
 				}
-				io_Sys->vBreak();
+				io_Sys[_MKSW_BUFFERS_INPUT].vBreak();
 				break;
 			}
 
-			io_Sys->vWriteOutput(C_MKSS_K_LOGIN_HIDER, _MKSC_COLOR_INPUT,TRUE);
+			io_Sys[_MKSW_BUFFERS_INPUT].vWriteOutput(C_MKSS_K_LOGIN_HIDER, _MKSC_COLOR_INPUT,TRUE);
 
 		}	
 	}
@@ -59,7 +59,7 @@ vRegister_login(SFUNC* k_Register, IOSYS* io_Sys)
 	return FALSE;
 }
 BOOL 
-vRegister_watch(SFUNC* k_Register, IOSYS* io_Sys)
+vRegister_watch(void* k_Register, BUFFER* io_Sys)
 {
 	if (SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] == TRUE) 
 	{
@@ -69,7 +69,7 @@ vRegister_watch(SFUNC* k_Register, IOSYS* io_Sys)
 	return FALSE;
 }
 BOOL 
-vRegister_lttry(SFUNC* k_Register, IOSYS* io_Sys)
+vRegister_lttry(void* k_Register, BUFFER* io_Sys)
 {
 	return FALSE;
 
