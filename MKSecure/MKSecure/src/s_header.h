@@ -39,14 +39,14 @@ typedef const LPSTR c_LPSTR;
 #define _MKSS_KEYS 2
 #define _MKSS_MSGSIZE 20
 
-extern char C_TXT_PREFIX[_MKSS_KEYS];
-extern char C_TXT_BREAK[_MKSS_KEYS];
+extern char C_TXT_PREFIX;
+extern char C_TXT_IN;
 
+extern char C_TXT_BREAK[_MKSS_KEYS];
 extern char C_TXT_ENDL;
 extern char C_TXT_NEWL;
 
 extern char C_FILE[];
-extern char C_TXT_IN[_MKSS_KEYS];
 
 extern char C_MKSS_K_UNKNOW[_MKSS_MSGSIZE];
 extern char C_MKSS_K_PERM[_MKSS_MSGSIZE];
@@ -90,13 +90,14 @@ struct sKey {
 
 #define _MKSS_BUFFERSIZE 64
 
-#define _MKSC_BACKGROUND (BACKGROUND_BLUE)
+#define _MKSC_BACKGROUND (0)
 #define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
 #define _MKSC_COLOR_UNKNOW ( FOREGROUND_RED | FOREGROUND_GREEN)
 #define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
 #define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
 #define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
 #define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
+#define _MKSC_COLOR_BORDER (FOREGROUND_RED)
 
 extern inline int __CC vTermLength(c_LPSTR);
 extern inline ULLI __CC vTenth(char);
@@ -139,17 +140,20 @@ public:
 	CHAR_INFO*	c_pBuffer;
 	COORD		dw_Size,dw_Cursor,dw_Pos;
 	HANDLE		o_Output;
-	SMALL_RECT sm_Rect;
+	SMALL_RECT	sm_Rect;
+	BOOL		b_Border;
 
-	BOOL __CC	vSetup(COORD, COORD, HANDLE);
+	BOOL __CC	vSetup(COORD, COORD, HANDLE, BOOL);
 	void __CC	vCleanup();
 
 	BOOL __CC	vWriteOutput(c_LPSTR, DWORD, WORD);
 	BOOL __CC	vWriteOutput( CHAR, WORD, BOOL);
 	BOOL __CC	vReadInput(CSTR*, LPDWORD, WORD);
 	BOOL __CC	vWriteBuffer();
-	BOOL __CC	vBreak();
+	void __CC	vBreak();
 	void __CC	vBufferClear();
+	void __CC	vSetCursor(COORD);
+	void __CC	vSetCursor(SHORT,SHORT);
 };
 class mks_func
 {

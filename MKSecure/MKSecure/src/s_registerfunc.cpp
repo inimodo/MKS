@@ -18,37 +18,6 @@ vRegister_login(void* k_Register, BUFFER* io_Sys)
 	DWORD dw_TempSize = 0;
 	ULLI ull_CN[2] = {0,0};
 	char c_CN;
-	for (char c_CNP = 0; c_CNP < 2; c_CNP++)
-	{
-		io_Sys[_MKSW_BUFFERS_INPUT].vWriteOutput(C_MKSS_K_LOGIN_CN, 7, _MKSC_COLOR_INPUT);
-		for (char c_Index = 0; c_Index < _MKSS_BUFFERSIZE; c_Index++)
-		{
-			c_CN = _getch();
-			if (c_CN == 13) 
-			{
-				if (c_Index <= 1) {
-					ull_CN[c_CNP] = 0;
-				}
-				io_Sys[_MKSW_BUFFERS_INPUT].vBreak();
-				break;
-			}
-			if (c_CN <= 57 && c_CN >= 48) 
-			{			
-				ull_CN[c_CNP] += (c_CN - 48) * vTenth(c_Index);
-			}
-			else 
-			{
-				if (c_Index <= 1) {
-					ull_CN[c_CNP] = 0;
-				}
-				io_Sys[_MKSW_BUFFERS_INPUT].vBreak();
-				break;
-			}
-
-			io_Sys[_MKSW_BUFFERS_INPUT].vWriteOutput(C_MKSS_K_LOGIN_HIDER, _MKSC_COLOR_INPUT,TRUE);
-
-		}	
-	}
 
 	if (ull_CN[0] * ull_CN[1] == _MKS_REGKEY) 
 	{

@@ -1,8 +1,8 @@
 #include"s_header.h"
 
-char C_TXT_PREFIX[_MKSS_KEYS] = ":";
+char C_TXT_PREFIX = 175;
+char C_TXT_IN = 36;
 
-char C_TXT_IN[_MKSS_KEYS] = "~";
 char C_TXT_BREAK [_MKSS_KEYS] = "\n";
 char C_TXT_ENDL = '\0';
 char C_TXT_NEWL = '\n';
