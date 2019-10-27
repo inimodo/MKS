@@ -8,7 +8,9 @@
 
 #define LOG(X) std::cout << X << std::endl
 
+// Default Buffer Count
 #define _MKSW_BUFFERS 2
+
 #define _MKSW_BUFFERS_INPUT 0
 #define _MKSW_BUFFERS_OUTPUT 1
 
@@ -28,21 +30,23 @@ typedef const LPSTR c_LPSTR;
 
 #define _MKS_REGKEY (ULLI)(137*173)
 
-#define _MKSR_REGFUNCTIONS 4
+//How many Register functions
+#define _MKSR_REGFUNCTIONS 6
+//How many Registers
 #define _MKSR_REGISTERS 2
+//Mayimum Arguments
+#define _MKSR_ARGUMENTS 4
 
 
 #define _MKSR_REGISTER_UNLOCKED 0
 #define _MKSR_REGISTER_WATCHING 1
 
 #define _MKSS_REGFUNCTIONSIZE 6
-#define _MKSS_KEYS 2
 #define _MKSS_MSGSIZE 20
 
 extern char C_TXT_PREFIX;
 extern char C_TXT_IN;
 
-extern char C_TXT_BREAK[_MKSS_KEYS];
 extern char C_TXT_ENDL;
 extern char C_TXT_NEWL;
 
@@ -73,6 +77,17 @@ extern char C_MKSS_K_LTTRY_GOOD[_MKSS_MSGSIZE];
 extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
 extern char C_MKSS_K_WATCH_FAILED[_MKSS_MSGSIZE];
 extern char C_MKSS_K_WATCH_GOOD[_MKSS_MSGSIZE];
+
+#define _MKSS_K_CLEAR 0x04
+extern char C_MKSS_K_CLEAR[_MKSS_REGFUNCTIONSIZE];
+extern char C_MKSS_K_CLEAR_FAILED[_MKSS_MSGSIZE];
+extern char C_MKSS_K_CLEAR_GOOD[_MKSS_MSGSIZE];
+
+#define _MKSS_K_INPUT 0x05
+extern char C_MKSS_K_INPUT[_MKSS_REGFUNCTIONSIZE];
+extern char C_MKSS_K_INPUT_FAILED[_MKSS_MSGSIZE];
+extern char C_MKSS_K_INPUT_GOOD[_MKSS_MSGSIZE];
+
 #define _MKSS_UNKNOW 0xEE
 
 #define _MKSS_NONE   0xAFA
@@ -97,15 +112,18 @@ struct sKey {
 #define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
 #define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
 #define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
-#define _MKSC_COLOR_BORDER (FOREGROUND_RED)
+#define _MKSC_COLOR_BORDER (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
 
-extern inline int __CC vTermLength(c_LPSTR);
-extern inline ULLI __CC vTenth(char);
 
 typedef class mks MKS;
 typedef class mks_func SFUNC;
 typedef class mks_str CSTR;
 typedef class mks_buffer BUFFER;
+
+extern inline int __CC	vTermLength(c_LPSTR);
+extern inline ULLI __CC vTenth(char);
+extern inline ULLI __CC vStringToUlli(CSTR, DWORD);
+extern inline void __CC vIntToString(int, CSTR*);
 
 class mks_str
 {
@@ -122,6 +140,7 @@ public:
 	void __CC	vSet(ushort);
 
 	void __CC	vClean();
+	void __CC	vClear();
 
 	void __CC	vAppend(CSTR*);
 	void __CC	vAppend(CSTR);
@@ -149,6 +168,7 @@ public:
 	BOOL __CC	vWriteOutput(c_LPSTR, DWORD, WORD);
 	BOOL __CC	vWriteOutput( CHAR, WORD, BOOL);
 	BOOL __CC	vReadInput(CSTR*, LPDWORD, WORD);
+	BOOL __CC	vReadInput(CSTR*, LPDWORD, WORD,CHAR);
 	BOOL __CC	vWriteBuffer();
 	void __CC	vBreak();
 	void __CC	vBufferClear();
@@ -157,17 +177,28 @@ public:
 };
 class mks_func
 {
-	static void __CC vFileread();
-	static void __CC vRequestCheck();
+	static void __CC	vFileread();
+	static void __CC	vRequestCheck();
 public:
-	static BOOL b_pStateBuffer[_MKSR_REGISTERS];
-	SKEY		k_Key;
-	BOOL		(*f_Register)(void*, BUFFER*);
+	static CSTR			c_ArgumentBuffer[_MKSR_ARGUMENTS];
+	static DWORD		dw_PasswordBuffer[_MKSR_ARGUMENTS];
+
+	static BOOL			b_pStateBuffer[_MKSR_REGISTERS];
+
+	static BOOL __CC	vValidate(int, BUFFER*,int);
+
+	SKEY				k_Key;
+	BOOL				(*f_Register)(void*, MKS*);
 };
 class mks 
 {
-private:
+
+public:
 	SFUNC		k_Funclist[_MKSR_REGFUNCTIONS];
+	int			i_Buffers{ _MKSW_BUFFERS }, 
+				i_RegisterBuffer{0};
+	BUFFER*		b_pBuffers;
+
 	HANDLE		o_HwndOutput{ 0 };
 	HANDLE		o_HwndInput{ 0 };
 
@@ -179,9 +210,7 @@ private:
 	DWORD		dw_Key{ _MKSS_NONE };
 	DWORD		dw_Msg{ _MKSS_NONE };
 
-	BUFFER		b_Buffers[_MKSW_BUFFERS];
 	
-public:
 	void __ST	vAssetWarmup();
 	BOOL __ST	vSetupHandle();
 
@@ -199,11 +228,14 @@ public:
 
 
 extern BOOL
-vRegister_break(void*, BUFFER*);
+vRegister_break(void*, MKS*);
 extern BOOL	  
-vRegister_login(void*, BUFFER*);
+vRegister_login(void*, MKS*);
 extern BOOL	   
-vRegister_watch(void*, BUFFER*);
+vRegister_watch(void*, MKS*);
 extern BOOL	  
-vRegister_lttry(void*, BUFFER*);
-
+vRegister_lttry(void*, MKS*);
+extern BOOL
+vRegister_clear(void*, MKS*);
+extern BOOL
+vRegister_input(void*, MKS*);

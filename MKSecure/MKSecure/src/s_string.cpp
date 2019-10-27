@@ -100,3 +100,13 @@ mks_str::vClean()
 	}
 	this->s_Length = 0;
 }
+void __CC
+mks_str::vClear()
+{
+	if (this->s_Length != 0) {
+		for (int i_Index = 0; i_Index < this->s_Length; i_Index++)
+		{
+			this->c_pStr[i_Index] = 0;
+		}
+	}
+}

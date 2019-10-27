@@ -22,23 +22,27 @@ mks::vSetup()
 	{
 		return FALSE;
 	}
-
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vSetup({0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
-	this->b_Buffers[_MKSW_BUFFERS_OUTPUT].vSetup({ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
+	this->b_pBuffers = (BUFFER*)malloc(sizeof(BUFFER)*this->i_Buffers);
+	if (this->b_pBuffers == NULL) 
+	{
+		return FALSE;
+	}
+	this->b_pBuffers[this->i_RegisterBuffer].vSetup({0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
+	this->b_pBuffers[_MKSW_BUFFERS_OUTPUT].vSetup({ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
 
 	return TRUE;
 }
 BOOL __CC
 mks::vCatchloop()
 {
+	vProcessRawKey();
 	return TRUE;
 }
 BOOL __CC
 mks::vLoop()
 {
 	vProcessKey();
-	vProcessMsg();
-	vProcessRawKey();
+	vProcessMsg();	
 	return 1;
 }
 BOOL __CC
@@ -53,10 +57,10 @@ void __CC
 mks::vProcessRawKey()
 {
 	this->dw_Key = _MKSS_UNKNOW;
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vReadInput(&this->c_RawKey, & dw_KeyLength, _MKSC_COLOR_INPUT);
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vBreak();
+	this->b_pBuffers[this->i_RegisterBuffer].vReadInput(&this->c_RawKey, & dw_KeyLength, _MKSC_COLOR_INPUT);
+	this->b_pBuffers[this->i_RegisterBuffer].vBreak();
 
-	this->b_Buffers[_MKSW_BUFFERS_OUTPUT].vWriteOutput((c_LPSTR)this->c_RawKey, dw_KeyLength, _MKSC_COLOR_NAME);
+	this->b_pBuffers[_MKSW_BUFFERS_OUTPUT].vWriteOutput((c_LPSTR)this->c_RawKey, dw_KeyLength, _MKSC_COLOR_NAME);
 
 	if (this->dw_KeyLength != _MKSS_REGFUNCTIONSIZE-1) 
 	{	
@@ -87,7 +91,7 @@ mks::vProcessKey()
 	this->dw_Msg = _MKSS_FAILED;
 	if (this->dw_Key != _MKSS_UNKNOW && this->dw_Key != _MKSS_NONE)
 	{
-		if (k_Funclist[this->dw_Key].f_Register(&k_Funclist[this->dw_Key], this->b_Buffers) == TRUE)
+		if (k_Funclist[this->dw_Key].f_Register(&k_Funclist[this->dw_Key],this) == TRUE)
 		{
 			this->dw_Msg = _MKSS_GOOD;
 		}
@@ -102,27 +106,27 @@ mks::vProcessMsg()
 {
 	if (this->dw_Key == _MKSS_UNKNOW)
 	{
-		this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
-		this->b_Buffers[_MKSW_BUFFERS_INPUT].vBreak();
+		this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
+		this->b_pBuffers[this->i_RegisterBuffer].vBreak();
 
 	}
 	else if (this->dw_Key != _MKSS_NONE)
 	{
 		if (this->dw_Msg == _MKSS_FAILED)
 		{
-			this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
+			this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
 		}
 		else
 			if (this->dw_Msg == _MKSS_GOOD)
 			{
-				this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
+				this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
 			}
-		this->b_Buffers[_MKSW_BUFFERS_INPUT].vBreak();
+		this->b_pBuffers[this->i_RegisterBuffer].vBreak();
 	}
 
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput(C_TXT_IN, _MKSC_COLOR_CMD,TRUE);
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, _MKSC_COLOR_NAME);
-	this->b_Buffers[_MKSW_BUFFERS_INPUT].vWriteOutput(C_TXT_PREFIX,  _MKSC_COLOR_CMD,TRUE);
+	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput(C_TXT_IN, _MKSC_COLOR_CMD,TRUE);
+	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, _MKSC_COLOR_NAME);
+	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput(C_TXT_PREFIX,  _MKSC_COLOR_CMD,TRUE);
 }
 void __ST
 mks::vAssetWarmup()
@@ -146,4 +150,14 @@ mks::vAssetWarmup()
 	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Key = C_MKSS_K_WATCH;
 	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Msg_Good = C_MKSS_K_WATCH_GOOD;
 	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Msg_Failed = C_MKSS_K_WATCH_FAILED;
+
+	this->k_Funclist[_MKSS_K_CLEAR].f_Register = vRegister_clear;
+	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Key = C_MKSS_K_CLEAR;
+	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Msg_Good = C_MKSS_K_CLEAR_GOOD;
+	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Msg_Failed = C_MKSS_K_CLEAR_FAILED;
+
+	this->k_Funclist[_MKSS_K_INPUT].f_Register = vRegister_input;
+	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Key = C_MKSS_K_INPUT;
+	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Msg_Good = C_MKSS_K_INPUT_GOOD;
+	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Msg_Failed = C_MKSS_K_INPUT_FAILED;
 }

@@ -19,12 +19,12 @@ mks_buffer::vSetup(COORD dw_Loc, COORD dw_Dim, HANDLE o_Hwnd,BOOL b_Hasborder)
 	this->dw_Pos = {0,0};
 	this->dw_Size = dw_Dim;
 	this->o_Output = o_Hwnd;
-	this->c_pBuffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* dw_Dim.X* dw_Dim.Y);
-	if (this->c_pBuffer == NULL)return FALSE;
 	this->sm_Rect.Top = dw_Loc.Y;
 	this->sm_Rect.Left = dw_Loc.X;
 	this->sm_Rect.Right = dw_Dim.X+ dw_Loc.X;
 	this->sm_Rect.Bottom = dw_Dim.Y+ dw_Loc.Y;
+	this->c_pBuffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* dw_Dim.X* dw_Dim.Y);
+	if (this->c_pBuffer == NULL)return FALSE;
 	this->vBufferClear();
 	return TRUE;
 }
@@ -58,6 +58,35 @@ mks_buffer::vReadInput(CSTR* c_Buffer, LPDWORD dw_pLength,WORD w_Color)
 	return TRUE;
 }
 BOOL __CC
+mks_buffer::vReadInput(CSTR* c_Buffer, LPDWORD dw_pLength, WORD w_Color,CHAR c_Passchar)
+{
+	for ((*dw_pLength) = 0; (*dw_pLength) < c_Buffer->s_Length; (*dw_pLength)++)
+	{
+		c_Buffer->c_pStr[(*dw_pLength)] = _getch();
+		if (c_Buffer->c_pStr[(*dw_pLength)] == 13)
+		{
+			return FALSE;
+		}
+		if (c_Buffer->c_pStr[(*dw_pLength)] == 8)
+		{
+			if ((*dw_pLength) > 0)
+			{
+
+				this->vSetCursor(-1, 0);
+				c_Buffer->c_pStr[(*dw_pLength)] = 0;
+
+				this->vWriteOutput(c_Buffer->c_pStr[(*dw_pLength)], w_Color, FALSE);
+				(*dw_pLength) -= 2;
+				continue;
+
+			}
+			continue;
+		}
+		this->vWriteOutput(c_Passchar, w_Color, TRUE);
+	}
+	return TRUE;
+}
+BOOL __CC
 mks_buffer::vWriteOutput(c_LPSTR c_pMsg, DWORD dw_Length, WORD w_Color)
 {
 	for (DWORD dw_Index = 0; dw_Index < dw_Length; dw_Index++)
@@ -85,6 +114,7 @@ mks_buffer::vBreak()
 void __CC
 mks_buffer::vBufferClear()
 {
+	this->vSetCursor({2,1});
 	for (int i_Index = 0; i_Index < this->dw_Size.X * this->dw_Size.Y; i_Index++)
 	{
 		this->c_pBuffer[i_Index].Attributes = _MKSC_BACKGROUND | _MKSC_COLOR_BORDER;
@@ -117,6 +147,7 @@ mks_buffer::vBufferClear()
 			}
 		}
 	}
+	this->vWriteBuffer();
 }
 void __CC 
 mks_buffer::vSetCursor(COORD dw_NewPos)
