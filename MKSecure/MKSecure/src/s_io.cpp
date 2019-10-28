@@ -27,8 +27,8 @@ mks::vSetup()
 	{
 		return FALSE;
 	}
-	this->b_pBuffers[this->i_RegisterBuffer].vSetup({0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
-	this->b_pBuffers[_MKSW_BUFFERS_OUTPUT].vSetup({ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vSetup({0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_OUTPUTBUFFER]].vSetup({ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
 
 	return TRUE;
 }
@@ -43,7 +43,7 @@ mks::vLoop()
 {
 	vProcessKey();
 	vProcessMsg();	
-	return 1;
+	return this->b_pStateBuffer[_MKSR_R_KEEPALIVE];
 }
 BOOL __CC
 mks::vCleanup()
@@ -57,8 +57,8 @@ void __CC
 mks::vProcessRawKey()
 {
 	this->dw_Key = _MKSS_UNKNOW;
-	this->b_pBuffers[this->i_RegisterBuffer].vReadInput(&this->c_RawKey, & dw_KeyLength, _MKSC_COLOR_INPUT);
-	this->b_pBuffers[this->i_RegisterBuffer].vBreak();
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vReadInput(&this->c_RawKey, & dw_KeyLength, _MKSC_COLOR_INPUT);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vBreak();
 
 	this->b_pBuffers[_MKSW_BUFFERS_OUTPUT].vWriteOutput((c_LPSTR)this->c_RawKey, dw_KeyLength, _MKSC_COLOR_NAME);
 
@@ -106,58 +106,51 @@ mks::vProcessMsg()
 {
 	if (this->dw_Key == _MKSS_UNKNOW)
 	{
-		this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput((c_LPSTR)C_MKSS_K_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
-		this->b_pBuffers[this->i_RegisterBuffer].vBreak();
+		this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)C_MKSS_E_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
+		this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vBreak();
 
 	}
 	else if (this->dw_Key != _MKSS_NONE)
 	{
 		if (this->dw_Msg == _MKSS_FAILED)
 		{
-			this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Failed, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
+			this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput( (c_LPSTR)C_MKSS_E_ERROR, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
 		}
-		else
-			if (this->dw_Msg == _MKSS_GOOD)
-			{
-				this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput( (c_LPSTR)k_Funclist[this->dw_Key].k_Key.c_Msg_Good, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
-			}
-		this->b_pBuffers[this->i_RegisterBuffer].vBreak();
+		else if (this->dw_Msg == _MKSS_GOOD)
+		{
+			this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput( (c_LPSTR)C_MKSS_E_GOOD, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
+		}
+		this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vBreak();
 	}
 
-	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput(C_TXT_IN, _MKSC_COLOR_CMD,TRUE);
-	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, _MKSC_COLOR_NAME);
-	this->b_pBuffers[this->i_RegisterBuffer].vWriteOutput(C_TXT_PREFIX,  _MKSC_COLOR_CMD,TRUE);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_IN, _MKSC_COLOR_CMD,TRUE);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->c_LUser, this->c_LUser.s_Length-1, _MKSC_COLOR_NAME);
+	this->b_pBuffers[this->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_PREFIX,  _MKSC_COLOR_CMD,TRUE);
 }
 void __ST
 mks::vAssetWarmup()
 {
 	this->k_Funclist[_MKSS_K_LOCK].f_Register = vRegister_break;
-	this->k_Funclist[_MKSS_K_LOCK].k_Key.c_Key = C_MKSS_K_LOCK;
-	this->k_Funclist[_MKSS_K_LOCK].k_Key.c_Msg_Good = C_MKSS_K_LOCK_GOOD;
-	this->k_Funclist[_MKSS_K_LOCK].k_Key.c_Msg_Failed = C_MKSS_K_LOCK_FAILED;
+	this->k_Funclist[_MKSS_K_LOCK].k_Key.c_Key = C_MKSS_K_BREAK;
 
 	this->k_Funclist[_MKSS_K_LOGGIN].f_Register = vRegister_login;
 	this->k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Key = C_MKSS_K_LOGIN;
-	this->k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Good = C_MKSS_K_LOGIN_GOOD;
-	this->k_Funclist[_MKSS_K_LOGGIN].k_Key.c_Msg_Failed = C_MKSS_K_LOGIN_FAILED;
 
 	this->k_Funclist[_MKSS_K_LTTRY].f_Register = vRegister_lttry;
 	this->k_Funclist[_MKSS_K_LTTRY].k_Key.c_Key = C_MKSS_K_LTTRY;
-	this->k_Funclist[_MKSS_K_LTTRY].k_Key.c_Msg_Good = C_MKSS_K_LTTRY_GOOD;
-	this->k_Funclist[_MKSS_K_LTTRY].k_Key.c_Msg_Failed = C_MKSS_K_LTTRY_FAILED;
 
 	this->k_Funclist[_MKSS_K_WATCH].f_Register = vRegister_watch;
 	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Key = C_MKSS_K_WATCH;
-	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Msg_Good = C_MKSS_K_WATCH_GOOD;
-	this->k_Funclist[_MKSS_K_WATCH].k_Key.c_Msg_Failed = C_MKSS_K_WATCH_FAILED;
 
 	this->k_Funclist[_MKSS_K_CLEAR].f_Register = vRegister_clear;
 	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Key = C_MKSS_K_CLEAR;
-	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Msg_Good = C_MKSS_K_CLEAR_GOOD;
-	this->k_Funclist[_MKSS_K_CLEAR].k_Key.c_Msg_Failed = C_MKSS_K_CLEAR_FAILED;
 
 	this->k_Funclist[_MKSS_K_INPUT].f_Register = vRegister_input;
 	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Key = C_MKSS_K_INPUT;
-	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Msg_Good = C_MKSS_K_INPUT_GOOD;
-	this->k_Funclist[_MKSS_K_INPUT].k_Key.c_Msg_Failed = C_MKSS_K_INPUT_FAILED;
+
+	this->k_Funclist[_MKSS_K_LSTBF].f_Register = vRegister_lstbf;
+	this->k_Funclist[_MKSS_K_LSTBF].k_Key.c_Key = C_MKSS_K_LSTBF;
+
+	this->k_Funclist[_MKSS_K_CLOSE].f_Register = vRegister_close;
+	this->k_Funclist[_MKSS_K_CLOSE].k_Key.c_Key = C_MKSS_K_CLOSE;
 }

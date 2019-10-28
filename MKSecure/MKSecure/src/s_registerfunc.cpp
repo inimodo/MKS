@@ -1,7 +1,5 @@
 #include"s_header.h"
 
-BOOL SFUNC::b_pStateBuffer[_MKSR_REGISTERS];
-
 CSTR SFUNC::c_ArgumentBuffer[_MKSR_ARGUMENTS];
 DWORD SFUNC::dw_PasswordBuffer[_MKSR_ARGUMENTS];
 
@@ -28,9 +26,9 @@ SFUNC::vValidate(int i_Count, BUFFER* b_Buffer,int i_Buffer)
 BOOL 
 vRegister_break(void* k_Register, MKS* mks_Pref)
 {
-	if (SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] == TRUE) 
+	if (mks_Pref->b_pStateBuffer[_MKSR_R_UNLOCKED] == TRUE)
 	{
-		SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] = FALSE;
+		mks_Pref->b_pStateBuffer[_MKSR_R_UNLOCKED] = FALSE;
 		return TRUE;
 	}
 	return FALSE;
@@ -40,7 +38,7 @@ vRegister_login(void* k_Register, MKS* mks_Pref)
 {
 	SFUNC::dw_PasswordBuffer[0] = TRUE;
 	SFUNC::dw_PasswordBuffer[1] = TRUE;
-	SFUNC::vValidate(2, mks_Pref->b_pBuffers, mks_Pref->i_RegisterBuffer);
+	SFUNC::vValidate(2, mks_Pref->b_pBuffers,mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]);
 
 	ULLI ull_CN[2];
 	ull_CN[0] = vStringToUlli(SFUNC::c_ArgumentBuffer[0], SFUNC::dw_PasswordBuffer[0]);
@@ -48,18 +46,21 @@ vRegister_login(void* k_Register, MKS* mks_Pref)
 
 	if (ull_CN[0] * ull_CN[1] == _MKS_REGKEY) 
 	{
-		SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] = TRUE;
+		mks_Pref->b_pStateBuffer[_MKSR_R_UNLOCKED] = TRUE;
 		return TRUE;
 	}
-	SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] = FALSE;
+	mks_Pref->b_pStateBuffer[_MKSR_R_UNLOCKED] = FALSE;
 	return FALSE;
 }
 BOOL 
 vRegister_watch(void* k_Register, MKS* mks_Pref)
 {
-	if (SFUNC::b_pStateBuffer[_MKSR_REGISTER_UNLOCKED] == TRUE) 
+	SFUNC::dw_PasswordBuffer[0] = FALSE;
+	SFUNC::vValidate(1, mks_Pref->b_pBuffers, mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]);
+	ULLI ulli_Buffer = vStringToUlli(SFUNC::c_ArgumentBuffer[0], SFUNC::dw_PasswordBuffer[0]);
+	if (ulli_Buffer >= 0 && ulli_Buffer < _MKSW_BUFFERS)
 	{
-		SFUNC::b_pStateBuffer[_MKSR_REGISTER_WATCHING] = TRUE;
+		mks_Pref->b_pStateBuffer[_MKSR_R_WATCHINGON] = ulli_Buffer;
 		return TRUE;
 	}
 	return FALSE;
@@ -74,7 +75,7 @@ BOOL
 vRegister_clear(void* k_Register, MKS* mks_Pref)
 {
 	SFUNC::dw_PasswordBuffer[0] = FALSE;
-	SFUNC::vValidate(1, mks_Pref->b_pBuffers, mks_Pref->i_RegisterBuffer);
+	SFUNC::vValidate(1, mks_Pref->b_pBuffers, mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]);
 	ULLI ulli_Buffer = vStringToUlli(SFUNC::c_ArgumentBuffer[0], SFUNC::dw_PasswordBuffer[0]);
 	if (ulli_Buffer >= 0 && ulli_Buffer < _MKSW_BUFFERS) 
 	{
@@ -87,12 +88,22 @@ BOOL
 vRegister_input(void* k_Register, MKS* mks_Pref)
 {
 	SFUNC::dw_PasswordBuffer[0] = FALSE;
-	SFUNC::vValidate(1, mks_Pref->b_pBuffers, mks_Pref->i_RegisterBuffer);
+	SFUNC::vValidate(1, mks_Pref->b_pBuffers, mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]);
 	ULLI ulli_Buffer = vStringToUlli(SFUNC::c_ArgumentBuffer[0], SFUNC::dw_PasswordBuffer[0]);
 	if (ulli_Buffer >= 0 && ulli_Buffer < _MKSW_BUFFERS)
 	{
-		mks_Pref->i_RegisterBuffer = ulli_Buffer;
+		mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER] = ulli_Buffer;
 		return TRUE;
 	}
 	return FALSE;
+}
+BOOL
+vRegister_lstbf(void* k_Register, MKS* mks_Pref)
+{
+	return mks_Pref->b_pBuffers[mks_Pref->b_pStateBuffer[_MKSR_R_OUTPUTBUFFER]].vWriteOutput(mks_Pref->b_pStateBuffer[_MKSR_R_REGISTERBUFFER]+48, _MKSC_COLOR_OUTPUT,TRUE);
+}
+BOOL
+vRegister_close(void* k_Register, MKS* mks_Pref)
+{
+	return mks_Pref->b_pStateBuffer[_MKSR_R_KEEPALIVE] = 0;
 }

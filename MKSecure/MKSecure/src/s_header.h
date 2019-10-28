@@ -30,16 +30,19 @@ typedef const LPSTR c_LPSTR;
 
 #define _MKS_REGKEY (ULLI)(137*173)
 
-//How many Register functions
-#define _MKSR_REGFUNCTIONS 6
+
+
 //How many Registers
-#define _MKSR_REGISTERS 2
-//Mayimum Arguments
-#define _MKSR_ARGUMENTS 4
+#define _MKSR_REGISTERS 5
 
+#define _MKSR_R_KEEPALIVE 0
+#define _MKSR_R_REGISTERBUFFER 1
+#define _MKSR_R_UNLOCKED 2
+#define _MKSR_R_OUTPUTBUFFER 3
+#define _MKSR_R_WATCHINGON 4
 
-#define _MKSR_REGISTER_UNLOCKED 0
-#define _MKSR_REGISTER_WATCHING 1
+//How many Register functions
+#define _MKSR_REGFUNCTIONS 8
 
 #define _MKSS_REGFUNCTIONSIZE 6
 #define _MKSS_MSGSIZE 20
@@ -52,41 +55,34 @@ extern char C_TXT_NEWL;
 
 extern char C_FILE[];
 
-extern char C_MKSS_K_UNKNOW[_MKSS_MSGSIZE];
-extern char C_MKSS_K_PERM[_MKSS_MSGSIZE];
+extern char C_MKSS_E_UNKNOW[_MKSS_MSGSIZE];
+extern char C_MKSS_E_PERM[_MKSS_MSGSIZE];
+extern char C_MKSS_E_ERROR[_MKSS_MSGSIZE];
+extern char C_MKSS_E_GOOD[_MKSS_MSGSIZE];
 
 #define _MKSS_K_LOCK   0x00
-extern char C_MKSS_K_LOCK[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_LOCK_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_LOCK_GOOD[_MKSS_MSGSIZE];
+extern char C_MKSS_K_BREAK[_MKSS_REGFUNCTIONSIZE];
 
 #define _MKSS_K_LOGGIN 0x01
 extern char C_MKSS_K_LOGIN[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_LOGIN_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_LOGIN_GOOD[_MKSS_MSGSIZE];
-
-extern char C_MKSS_K_LOGIN_CN[_MKSS_MSGSIZE];
-extern char C_MKSS_K_LOGIN_HIDER;
 
 #define _MKSS_K_LTTRY  0x02
 extern char C_MKSS_K_LTTRY[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_LTTRY_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_LTTRY_GOOD[_MKSS_MSGSIZE];
 
 #define _MKSS_K_WATCH 0x03
 extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_WATCH_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_WATCH_GOOD[_MKSS_MSGSIZE];
 
 #define _MKSS_K_CLEAR 0x04
 extern char C_MKSS_K_CLEAR[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_CLEAR_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_CLEAR_GOOD[_MKSS_MSGSIZE];
 
 #define _MKSS_K_INPUT 0x05
 extern char C_MKSS_K_INPUT[_MKSS_REGFUNCTIONSIZE];
-extern char C_MKSS_K_INPUT_FAILED[_MKSS_MSGSIZE];
-extern char C_MKSS_K_INPUT_GOOD[_MKSS_MSGSIZE];
+
+#define _MKSS_K_LSTBF 0x06
+extern char C_MKSS_K_LSTBF[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_CLOSE 0x07
+extern char C_MKSS_K_CLOSE[_MKSS_REGFUNCTIONSIZE];
 
 #define _MKSS_UNKNOW 0xEE
 
@@ -99,8 +95,6 @@ extern char C_MKSS_K_INPUT_GOOD[_MKSS_MSGSIZE];
 typedef struct sKey SKEY;
 struct sKey {
 	char*		c_Key;
-	char*		c_Msg_Good;
-	char*		c_Msg_Failed;
 };
 
 #define _MKSS_BUFFERSIZE 64
@@ -112,6 +106,7 @@ struct sKey {
 #define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
 #define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
 #define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
+#define _MKSC_COLOR_OUTPUT (FOREGROUND_GREEN | FOREGROUND_RED)
 #define _MKSC_COLOR_BORDER (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
 
 
@@ -175,15 +170,15 @@ public:
 	void __CC	vSetCursor(COORD);
 	void __CC	vSetCursor(SHORT,SHORT);
 };
+
+//Mayimum Arguments
+#define _MKSR_ARGUMENTS 4
+
 class mks_func
 {
-	static void __CC	vFileread();
-	static void __CC	vRequestCheck();
 public:
 	static CSTR			c_ArgumentBuffer[_MKSR_ARGUMENTS];
 	static DWORD		dw_PasswordBuffer[_MKSR_ARGUMENTS];
-
-	static BOOL			b_pStateBuffer[_MKSR_REGISTERS];
 
 	static BOOL __CC	vValidate(int, BUFFER*,int);
 
@@ -194,9 +189,9 @@ class mks
 {
 
 public:
+	BOOL		b_pStateBuffer[_MKSR_REGISTERS]={1,0,0,1,-1};
 	SFUNC		k_Funclist[_MKSR_REGFUNCTIONS];
-	int			i_Buffers{ _MKSW_BUFFERS }, 
-				i_RegisterBuffer{0};
+	int			i_Buffers{ _MKSW_BUFFERS };
 	BUFFER*		b_pBuffers;
 
 	HANDLE		o_HwndOutput{ 0 };
@@ -239,3 +234,7 @@ extern BOOL
 vRegister_clear(void*, MKS*);
 extern BOOL
 vRegister_input(void*, MKS*);
+extern BOOL
+vRegister_lstbf(void*, MKS*);
+extern BOOL
+vRegister_close(void*, MKS*);

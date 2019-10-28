@@ -42,14 +42,12 @@ mks_buffer::vReadInput(CSTR* c_Buffer, LPDWORD dw_pLength,WORD w_Color)
 		{
 			if ((*dw_pLength) > 0)
 			{
-
 				this->vSetCursor(-1, 0);
 				c_Buffer->c_pStr[(*dw_pLength)] = 0;
 
 				this->vWriteOutput( c_Buffer->c_pStr[(*dw_pLength)], w_Color, FALSE);
 				(*dw_pLength) -= 2;
 				continue;
-
 			}
 			continue;
 		}
