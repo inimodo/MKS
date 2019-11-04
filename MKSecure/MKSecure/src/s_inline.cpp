@@ -21,13 +21,13 @@ vTenth(char c_Expo)
 	return ull_return;
 }
 
-inline ULLI __CC 
-vStringToUlli(CSTR c_Input,DWORD dw_Size)
+inline int __CC 
+vStringToInt(CSTR c_Input,DWORD dw_Size)
 {
-	ULLI ull_Output = 0;
+	int ull_Output = 0;
 	for (int i_Index = 0; i_Index < dw_Size; i_Index++)
 	{
-		ull_Output+=(ULLI)(c_Input.c_pStr[i_Index] - (char)48)* vTenth(dw_Size- i_Index-1);
+		ull_Output+=(int)(c_Input.c_pStr[i_Index] - (char)48)* vTenth(dw_Size- i_Index-1);
 	}
 	return  ull_Output;
 }

@@ -3,13 +3,16 @@
 MKS o_Object;
 int main()
 {
-	if (!o_Object.vSetup())
+	if (o_Object.vBuffeWarmup())
 	{
-		return o_Object.vCleanup();
+		o_Object.vAssetWarmup();
+		while (o_Object.b_Register[_MKSR_R_KEEPALIVE])
+		{
+			o_Object.vInputRoutine();
+			o_Object.vFetchInput();
+			o_Object.vFetchOutput();
+			o_Object.vOutputRoutine();
+		} 
 	}
-	while (o_Object.vLoop())
-	{
-		o_Object.vCatchloop();
-	} 
 	return o_Object.vCleanup();
 }

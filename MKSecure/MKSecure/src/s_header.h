@@ -6,17 +6,16 @@
 #include <direct.h>
 #include <conio.h>
 
+#include "s_literals.h"
+
 #define LOG(X) std::cout << X << std::endl
 
 // Default Buffer Count
 #define _MKSW_BUFFERS 2
 
-#define _MKSW_BUFFERS_INPUT 0
-#define _MKSW_BUFFERS_OUTPUT 1
 
 #define _MKSW_WIDTH 45
 #define _MKSW_HEIGHT 30
-#define _MKSW_INHEIGHT (_MKSW_HEIGHT-2)
 
 
 #define _MKSW_INDEX(CD,CS) (int)((((COORD)CD).Y*((COORD)CS).X)+((COORD)CD).X)
@@ -24,78 +23,27 @@
 #define __ST __cdecl
 #define __REG register
 
-typedef unsigned short ushort;
-typedef unsigned long long int ULLI;
-typedef const LPSTR c_LPSTR;
 
 #define _MKS_REGKEY (ULLI)(137*173)
 
 
-
 //How many Registers
-#define _MKSR_REGISTERS 5
+#define _MKSR_REGISTERS 8
 
 #define _MKSR_R_KEEPALIVE 0
 #define _MKSR_R_REGISTERBUFFER 1
 #define _MKSR_R_UNLOCKED 2
 #define _MKSR_R_OUTPUTBUFFER 3
 #define _MKSR_R_WATCHINGON 4
+#define _MKSR_R_FILEHOOKED 5 // 1 if a File is beeing read from buffer
+#define _MKSR_R_FILEINDEX 6 //  defines pointer position in file
 
 //How many Register functions
-#define _MKSR_REGFUNCTIONS 8
+#define _MKSR_REGFUNCTIONS 9
 
-#define _MKSS_REGFUNCTIONSIZE 6
-#define _MKSS_MSGSIZE 20
-
-extern char C_TXT_PREFIX;
-extern char C_TXT_IN;
-
-extern char C_TXT_ENDL;
-extern char C_TXT_NEWL;
-
-extern char C_FILE[];
-
-extern char C_MKSS_E_UNKNOW[_MKSS_MSGSIZE];
-extern char C_MKSS_E_PERM[_MKSS_MSGSIZE];
-extern char C_MKSS_E_ERROR[_MKSS_MSGSIZE];
-extern char C_MKSS_E_GOOD[_MKSS_MSGSIZE];
-
-#define _MKSS_K_LOCK   0x00
-extern char C_MKSS_K_BREAK[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_LOGGIN 0x01
-extern char C_MKSS_K_LOGIN[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_LTTRY  0x02
-extern char C_MKSS_K_LTTRY[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_WATCH 0x03
-extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_CLEAR 0x04
-extern char C_MKSS_K_CLEAR[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_INPUT 0x05
-extern char C_MKSS_K_INPUT[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_LSTBF 0x06
-extern char C_MKSS_K_LSTBF[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_K_CLOSE 0x07
-extern char C_MKSS_K_CLOSE[_MKSS_REGFUNCTIONSIZE];
-
-#define _MKSS_UNKNOW 0xEE
-
-#define _MKSS_NONE   0xAFA
+#define _MKSS_UNKNOW 0xEEE
 #define _MKSS_GOOD	 0xAAA
 #define _MKSS_FAILED 0xFFF
-
-
-
-typedef struct sKey SKEY;
-struct sKey {
-	char*		c_Key;
-};
 
 #define _MKSS_BUFFERSIZE 64
 
@@ -110,14 +58,19 @@ struct sKey {
 #define _MKSC_COLOR_BORDER (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
 
 
+typedef unsigned short ushort;
+typedef unsigned long long int ULLI;
+typedef const LPSTR c_LPSTR;
+
 typedef class mks MKS;
 typedef class mks_func SFUNC;
 typedef class mks_str CSTR;
 typedef class mks_buffer BUFFER;
+typedef class mks_branch BRANCH;
 
 extern inline int __CC	vTermLength(c_LPSTR);
 extern inline ULLI __CC vTenth(char);
-extern inline ULLI __CC vStringToUlli(CSTR, DWORD);
+extern inline int __CC vStringToInt(CSTR, DWORD);
 extern inline void __CC vIntToString(int, CSTR*);
 
 class mks_str
@@ -170,71 +123,81 @@ public:
 	void __CC	vSetCursor(COORD);
 	void __CC	vSetCursor(SHORT,SHORT);
 };
-
-//Mayimum Arguments
+#define _MKSR_ARGUMENT_TYPE int
+typedef _MKSR_ARGUMENT_TYPE ARGT;
+//Maximum Arguments
 #define _MKSR_ARGUMENTS 4
+class mks_branch 
+{
+	DWORD		dw_Key{0};
+
+	BRANCH*		b_ArgumentBuffer[_MKSR_ARGUMENTS];
+	ARGT		a_ArgumentBufferValue[_MKSR_ARGUMENTS];
+};
 
 class mks_func
 {
 public:
-	static CSTR			c_ArgumentBuffer[_MKSR_ARGUMENTS];
-	static DWORD		dw_PasswordBuffer[_MKSR_ARGUMENTS];
+	ARGT		a_ArgumentBuffer[_MKSR_ARGUMENTS];
 
-	static BOOL __CC	vValidate(int, BUFFER*,int);
-
-	SKEY				k_Key;
-	BOOL				(*f_Register)(void*, MKS*);
+	char		c_Arguments;
+	char*		c_Name;
+	BOOL		(*f_Register)(SFUNC*, MKS*);
 };
 class mks 
 {
 
 public:
-	BOOL		b_pStateBuffer[_MKSR_REGISTERS]={1,0,0,1,-1};
-	SFUNC		k_Funclist[_MKSR_REGFUNCTIONS];
-	int			i_Buffers{ _MKSW_BUFFERS };
-	BUFFER*		b_pBuffers;
+	BOOL		b_Register[_MKSR_REGISTERS]={1,0,0,1,-1,FALSE,0,0};
+	SFUNC		o_RegisterFunctions[_MKSR_REGFUNCTIONS];
+	int			i_ScreenBufferCount{ _MKSW_BUFFERS };
+
+	BUFFER*		o_pScreenBuffer;
+	FILE*		f_pOpenFiles;
+	BRANCH*		b_pTree;
 
 	HANDLE		o_HwndOutput{ 0 };
 	HANDLE		o_HwndInput{ 0 };
 
-	CSTR		c_LUser,c_LDir;
+	CSTR		c_WinUsername,c_SoftwareDir;
 
 	DWORD		dw_KeyLength{ 0 };
-	CSTR		c_RawKey;
+	CSTR		c_InputRegister;
 
-	DWORD		dw_Key{ _MKSS_NONE };
-	DWORD		dw_Msg{ _MKSS_NONE };
+	DWORD		dw_Key{ _MKSS_UNKNOW };
+	DWORD		dw_Msg{ _MKSS_UNKNOW };
 
 	
-	void __ST	vAssetWarmup();
-	BOOL __ST	vSetupHandle();
+	void  __ST	vAssetWarmup();
+	BOOL  __CC	vBuffeWarmup();
 
-	void __CC	vProcessRawKey();
-	void __CC	vProcessKey();
-	void __CC	vProcessMsg();
+	void  __CC	vInputRoutine();
+	BOOL  __CC	vFetchInput();
+	BOOL  __CC	vFetchFile();
+	BOOL  __CC	vFetchOutput();
+	void  __CC	vOutputRoutine();
+	
+	BOOL  __CC	vGetFunctionId(int);
 
-	BOOL __CC	vSetup();
-	BOOL __CC	vLoop();
-	BOOL __CC	vCatchloop();
-	int __CC	vCleanup();
+	BOOL  __CC	vCleanup();
 };
 
 
-
-
 extern BOOL
-vRegister_break(void*, MKS*);
+vRegister_break(SFUNC*, MKS*);
 extern BOOL	  
-vRegister_login(void*, MKS*);
+vRegister_login(SFUNC*, MKS*);
 extern BOOL	   
-vRegister_watch(void*, MKS*);
+vRegister_watch(SFUNC*, MKS*);
 extern BOOL	  
-vRegister_lttry(void*, MKS*);
+vRegister_lttry(SFUNC*, MKS*);
 extern BOOL
-vRegister_clear(void*, MKS*);
+vRegister_clear(SFUNC*, MKS*);
 extern BOOL
-vRegister_input(void*, MKS*);
+vRegister_input(SFUNC*, MKS*);
 extern BOOL
-vRegister_lstbf(void*, MKS*);
+vRegister_lstbf(SFUNC*, MKS*);
 extern BOOL
-vRegister_close(void*, MKS*);
+vRegister_close(SFUNC*, MKS*);
+extern BOOL
+vRegister_regst(SFUNC*, MKS*);

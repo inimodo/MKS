@@ -1,0 +1,45 @@
+#pragma once
+#define _MKSS_REGFUNCTIONSIZE 6
+#define _MKSS_MSGSIZE 20
+
+extern char C_TXT_INPUT_PREFIX;
+extern char C_TXT_INPUT_SUFIX;
+
+extern char C_TXT_FETCH_ARGUMENT;
+extern char C_TXT_FETCH_REQUEST;
+
+
+extern char C_TXT_ENDL;
+extern char C_TXT_NEWL;
+
+extern char C_MKSS_E_UNKNOW[_MKSS_MSGSIZE];
+extern char C_MKSS_E_PERM[_MKSS_MSGSIZE];
+extern char C_MKSS_E_ERROR[_MKSS_MSGSIZE];
+extern char C_MKSS_E_GOOD[_MKSS_MSGSIZE];
+
+#define _MKSS_K_LOCK   0
+extern char C_MKSS_K_BREAK[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_LOGGIN 1
+extern char C_MKSS_K_LOGIN[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_LTTRY  2
+extern char C_MKSS_K_LTTRY[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_WATCH 3
+extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_CLEAR 4
+extern char C_MKSS_K_CLEAR[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_INPUT 5
+extern char C_MKSS_K_INPUT[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_LSTBF 6
+extern char C_MKSS_K_LSTBF[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_CLOSE 7
+extern char C_MKSS_K_CLOSE[_MKSS_REGFUNCTIONSIZE];
+
+#define _MKSS_K_REGST 8
+extern char C_MKSS_K_REGST[_MKSS_REGFUNCTIONSIZE];

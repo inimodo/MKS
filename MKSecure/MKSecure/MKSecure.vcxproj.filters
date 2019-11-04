@@ -44,5 +44,8 @@
     <ClInclude Include="src\s_header.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
+    <ClInclude Include="src\s_literals.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
