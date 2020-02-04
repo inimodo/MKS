@@ -21,8 +21,8 @@ mks_buffer::vSetup(COORD dw_Loc, COORD dw_Dim, HANDLE o_Hwnd,BOOL b_Hasborder)
 	this->o_Output = o_Hwnd;
 	this->sm_Rect.Top = dw_Loc.Y;
 	this->sm_Rect.Left = dw_Loc.X;
-	this->sm_Rect.Right = dw_Dim.X+ dw_Loc.X;
-	this->sm_Rect.Bottom = dw_Dim.Y+ dw_Loc.Y;
+	this->sm_Rect.Right = dw_Dim.X+ dw_Loc.X-1;
+	this->sm_Rect.Bottom = dw_Dim.Y+ dw_Loc.Y-1;
 	this->c_pBuffer = (CHAR_INFO*)malloc(sizeof(CHAR_INFO)* dw_Dim.X* dw_Dim.Y);
 	if (this->c_pBuffer == NULL)return FALSE;
 	this->vBufferClear();

@@ -49,13 +49,13 @@
 
 #define _MKSC_BACKGROUND (0)
 #define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
-#define _MKSC_COLOR_UNKNOW ( FOREGROUND_RED | FOREGROUND_GREEN)
+#define _MKSC_COLOR_UNKNOW 11
 #define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
-#define _MKSC_COLOR_CMD (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY )
-#define _MKSC_COLOR_NAME (FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY)
-#define _MKSC_COLOR_INPUT (FOREGROUND_BLUE | FOREGROUND_GREEN)
+#define _MKSC_COLOR_CMD 7
+#define _MKSC_COLOR_NAME 13
+#define _MKSC_COLOR_INPUT 15
 #define _MKSC_COLOR_OUTPUT (FOREGROUND_GREEN | FOREGROUND_RED)
-#define _MKSC_COLOR_BORDER (FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY)
+#define _MKSC_COLOR_BORDER 8
 
 
 typedef unsigned short ushort;
@@ -66,6 +66,7 @@ typedef class mks MKS;
 typedef class mks_func SFUNC;
 typedef class mks_str CSTR;
 typedef class mks_buffer BUFFER;
+typedef struct mks_buffer_info BUFFER_INFO;
 typedef class mks_branch BRANCH;
 
 extern inline int __CC	vTermLength(c_LPSTR);
@@ -101,6 +102,15 @@ public:
 		return c_pStr;
 	}
 };
+struct mks_buffer_info {
+	COORD dw_Pos, dw_Size;
+	BOOL b_HasBorder;
+};
+
+#define _MKSD_REGISTERBUFFER {{0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT },TRUE}
+#define _MKSD_OUTPUTBUFFER {{ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT },TRUE}
+
+
 class mks_buffer {
 public:
 
@@ -150,7 +160,7 @@ class mks
 public:
 	BOOL		b_Register[_MKSR_REGISTERS]={1,0,0,1,-1,FALSE,0,0};
 	SFUNC		o_RegisterFunctions[_MKSR_REGFUNCTIONS];
-	int			i_ScreenBufferCount{ _MKSW_BUFFERS };
+	int			i_ScreenBufferCount{ 0 };
 
 	BUFFER*		o_pScreenBuffer;
 	FILE*		f_pOpenFiles;
@@ -170,6 +180,7 @@ public:
 	
 	void  __ST	vAssetWarmup();
 	BOOL  __CC	vBuffeWarmup();
+	int   __CC	vBufferReact(BUFFER_INFO, HANDLE);
 
 	void  __CC	vInputRoutine();
 	BOOL  __CC	vFetchInput();

@@ -1,7 +1,7 @@
 #include"s_header.h"
 
 char C_TXT_INPUT_PREFIX = 175; // $
-char C_TXT_INPUT_SUFIX= 36; // :
+char C_TXT_INPUT_SUFIX= 36; // >>
 
 char C_TXT_FETCH_ARGUMENT = 34; // "
 char C_TXT_FETCH_REQUEST = 64; //@

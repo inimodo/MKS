@@ -26,12 +26,55 @@ mks::vBuffeWarmup()
 	{
 		return FALSE;
 	}
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vSetup({0,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_OUTPUTBUFFER]].vSetup({ _MKSW_WIDTH,0}, { _MKSW_WIDTH ,_MKSW_HEIGHT }, o_HwndOutput,TRUE);
-
+	this->b_Register[_MKSR_R_REGISTERBUFFER] = this->vBufferReact(_MKSD_REGISTERBUFFER, o_HwndOutput);
+	this->b_Register[_MKSR_R_OUTPUTBUFFER] = this->vBufferReact(_MKSD_OUTPUTBUFFER, o_HwndOutput);
+	
 	return TRUE;
 }
+int   __CC	
+mks::vBufferReact(BUFFER_INFO bi_Buffer,HANDLE o_Hwnd)
+{
+	++this->i_ScreenBufferCount;
+	if (this->i_ScreenBufferCount == 0) 
+	{
+		this->o_pScreenBuffer = (BUFFER*)malloc( sizeof(BUFFER) * this->i_ScreenBufferCount);
+	}
+	else
+	{
+		 void*  v_Safe = realloc(this->o_pScreenBuffer, sizeof(BUFFER) * this->i_ScreenBufferCount);
+		if (v_Safe != NULL)
+		{
+			this->o_pScreenBuffer = (BUFFER*)v_Safe;
+		}
+	}
+	this->o_pScreenBuffer[this->i_ScreenBufferCount - 1].vSetup(bi_Buffer.dw_Pos, bi_Buffer.dw_Size, o_Hwnd, bi_Buffer.b_HasBorder);
+	
+	int i_Height, i_Width,i_Highest_X = 0, i_Highest_Y = 0;
+	for (int i_Index = 0; i_Index < this->i_ScreenBufferCount; i_Index++)
+	{
+		i_Width = this->o_pScreenBuffer[i_Index].sm_Rect.Right+1;
+		i_Height = this->o_pScreenBuffer[i_Index].sm_Rect.Bottom+1;
+		if (i_Width > i_Highest_X) {
+			i_Highest_X = i_Width;
+		}
+		if (i_Height > i_Highest_Y) {
+			i_Highest_Y = i_Height;
 
+		}
+		
+	}
+	printf("%d A: %d %d %d %d\n", this->i_ScreenBufferCount, i_Highest_X, i_Highest_Y, i_Width, i_Height);
+
+
+	COORD dw_Size = { i_Highest_X,i_Highest_Y };
+	SMALL_RECT sm_Rect = {0,0, i_Highest_X-1,i_Highest_Y-1};
+
+
+	SetConsoleScreenBufferSize(this->o_HwndOutput, dw_Size);
+	SetConsoleWindowInfo(this->o_HwndOutput, 1, &sm_Rect);
+
+	return (this->i_ScreenBufferCount - 1);
+}
 void __ST
 mks::vAssetWarmup()
 {
@@ -96,7 +139,9 @@ mks::vFetchOutput()
 BOOL __CC
 mks::vFetchFile()
 {
-
+	this->c_InputRegister.
+	printf("Hello\n");
+	system("pause");
 	return TRUE;
 }
 void __CC
