@@ -42,6 +42,7 @@
 #define _MKSR_REGFUNCTIONS 9
 
 #define _MKSS_UNKNOW 0xEEE
+#define _MKSS_UNKNOWF 0xFEF
 #define _MKSS_GOOD	 0xAAA
 #define _MKSS_FAILED 0xFFF
 
@@ -133,12 +134,13 @@ public:
 	void __CC	vSetCursor(COORD);
 	void __CC	vSetCursor(SHORT,SHORT);
 };
-#define _MKSR_ARGUMENT_TYPE int
+#define _MKSR_ARGUMENT_TYPE void*
 typedef _MKSR_ARGUMENT_TYPE ARGT;
 //Maximum Arguments
 #define _MKSR_ARGUMENTS 4
 class mks_branch 
 {
+public:
 	DWORD		dw_Key{0};
 
 	BRANCH*		b_ArgumentBuffer[_MKSR_ARGUMENTS];
@@ -150,9 +152,9 @@ class mks_func
 public:
 	ARGT		a_ArgumentBuffer[_MKSR_ARGUMENTS];
 
-	char		c_Arguments;
+	char		c_Arguments,c_Return;
 	char*		c_Name;
-	BOOL		(*f_Register)(SFUNC*, MKS*);
+	BOOL		(*f_Register)(SFUNC*, MKS*,void*);
 };
 class mks 
 {
@@ -163,7 +165,8 @@ public:
 	int			i_ScreenBufferCount{ 0 };
 
 	BUFFER*		o_pScreenBuffer;
-	FILE*		f_pOpenFiles;
+	FILE*		f_pOpenFile;
+	int			i_Brachnes{0};
 	BRANCH*		b_pTree;
 
 	HANDLE		o_HwndOutput{ 0 };
@@ -185,6 +188,8 @@ public:
 	void  __CC	vInputRoutine();
 	BOOL  __CC	vFetchInput();
 	BOOL  __CC	vFetchFile();
+	BOOL  __CC	vFetchBranch(BRANCH *);
+	BOOL  __CC	vCreateBranch(BRANCH**);
 	BOOL  __CC	vFetchOutput();
 	void  __CC	vOutputRoutine();
 	
@@ -195,20 +200,20 @@ public:
 
 
 extern BOOL
-vRegister_break(SFUNC*, MKS*);
+vRegister_break(SFUNC*, MKS*, void *);
 extern BOOL	  
-vRegister_login(SFUNC*, MKS*);
+vRegister_login(SFUNC*, MKS*, void *);
 extern BOOL	   
-vRegister_watch(SFUNC*, MKS*);
+vRegister_wkdir(SFUNC*, MKS*, void *);
 extern BOOL	  
-vRegister_lttry(SFUNC*, MKS*);
+vRegister_lttry(SFUNC*, MKS*, void *);
 extern BOOL
-vRegister_clear(SFUNC*, MKS*);
+vRegister_clear(SFUNC*, MKS*, void *);
 extern BOOL
-vRegister_input(SFUNC*, MKS*);
+vRegister_input(SFUNC*, MKS*, void *);
 extern BOOL
-vRegister_lstbf(SFUNC*, MKS*);
+vRegister_lstbf(SFUNC*, MKS*, void *);
 extern BOOL
-vRegister_close(SFUNC*, MKS*);
+vRegister_close(SFUNC*, MKS*, void *);
 extern BOOL
-vRegister_regst(SFUNC*, MKS*);
+vRegister_regst(SFUNC*, MKS*, void *);

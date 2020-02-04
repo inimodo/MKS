@@ -13,6 +13,7 @@ extern char C_TXT_ENDL;
 extern char C_TXT_NEWL;
 
 extern char C_MKSS_E_UNKNOW[_MKSS_MSGSIZE];
+extern char C_MKSS_E_UNKNOWF[_MKSS_MSGSIZE];
 extern char C_MKSS_E_PERM[_MKSS_MSGSIZE];
 extern char C_MKSS_E_ERROR[_MKSS_MSGSIZE];
 extern char C_MKSS_E_GOOD[_MKSS_MSGSIZE];
@@ -26,8 +27,8 @@ extern char C_MKSS_K_LOGIN[_MKSS_REGFUNCTIONSIZE];
 #define _MKSS_K_LTTRY  2
 extern char C_MKSS_K_LTTRY[_MKSS_REGFUNCTIONSIZE];
 
-#define _MKSS_K_WATCH 3
-extern char C_MKSS_K_WATCH[_MKSS_REGFUNCTIONSIZE];
+#define _MKSS_K_WKDIR 3
+extern char C_MKSS_K_WKDIR[_MKSS_REGFUNCTIONSIZE];
 
 #define _MKSS_K_CLEAR 4
 extern char C_MKSS_K_CLEAR[_MKSS_REGFUNCTIONSIZE];
