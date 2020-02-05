@@ -1,7 +1,7 @@
 #include"s_header.h"(SFUNC* k_Register, MKS* mks_Pref)
 
 BOOL 
-vRegister_break(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_break(SFUNC* k_Register, MKS* mks_Pref)
 {
 	if (mks_Pref->b_Register[_MKSR_R_UNLOCKED] == TRUE)
 	{
@@ -11,7 +11,7 @@ vRegister_break(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
 	return FALSE;
 }
 BOOL 
-vRegister_login(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_login(SFUNC* k_Register, MKS* mks_Pref)
 {
 
 	if ((int)k_Register->a_ArgumentBuffer[0] * (int)k_Register->a_ArgumentBuffer[1] == _MKS_REGKEY)
@@ -23,7 +23,7 @@ vRegister_login(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
 	return FALSE;
 }
 BOOL 
-vRegister_wkdir(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_wkdir(SFUNC* k_Register, MKS* mks_Pref)
 {
 	if ((int)k_Register->a_ArgumentBuffer[0] >= 0 && (int)k_Register->a_ArgumentBuffer[0] < _MKSW_BUFFERS)
 	{
@@ -33,15 +33,15 @@ vRegister_wkdir(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
 	return FALSE;
 }
 BOOL 
-vRegister_lttry(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_lttry(SFUNC* k_Register, MKS* mks_Pref)
 {
 	return FALSE;
 
 }
 BOOL
-vRegister_clear(SFUNC* k_Register, MKS* mks_Pref,void * v_Return)
+vRegister_clear(SFUNC* k_Register, MKS* mks_Pref)
 {
-	if (k_Register->a_ArgumentBuffer[0] >= 0 && k_Register->a_ArgumentBuffer[0] < _MKSW_BUFFERS)
+	if ((int)k_Register->a_ArgumentBuffer[0] >= 0 && (int)k_Register->a_ArgumentBuffer[0] < _MKSW_BUFFERS)
 	{
 		mks_Pref->o_pScreenBuffer[(int)k_Register->a_ArgumentBuffer[0]].vBufferClear();
 		return TRUE;
@@ -49,9 +49,9 @@ vRegister_clear(SFUNC* k_Register, MKS* mks_Pref,void * v_Return)
 	return FALSE;
 }
 BOOL
-vRegister_input(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_input(SFUNC* k_Register, MKS* mks_Pref)
 {
-	if (k_Register->a_ArgumentBuffer[0] >= 0 && k_Register->a_ArgumentBuffer[0] < _MKSW_BUFFERS)
+	if ((int)k_Register->a_ArgumentBuffer[0] >= 0 && (int)k_Register->a_ArgumentBuffer[0] < _MKSW_BUFFERS)
 	{
 		mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER] = (int)k_Register->a_ArgumentBuffer[0];
 		return TRUE;
@@ -59,17 +59,17 @@ vRegister_input(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
 	return FALSE;
 }
 BOOL
-vRegister_lstbf(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_lstbf(SFUNC* k_Register, MKS* mks_Pref)
 {
 	return mks_Pref->o_pScreenBuffer[mks_Pref->b_Register[_MKSR_R_OUTPUTBUFFER]].vWriteOutput(mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER]+48, _MKSC_COLOR_OUTPUT,TRUE);
 }
 BOOL
-vRegister_close(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_close(SFUNC* k_Register, MKS* mks_Pref)
 {
 	return mks_Pref->b_Register[_MKSR_R_KEEPALIVE] = 0;
 }
 BOOL
-vRegister_regst(SFUNC* k_Register, MKS* mks_Pref, void * v_Return)
+vRegister_regst(SFUNC* k_Register, MKS* mks_Pref)
 {
 	if ((int)k_Register->a_ArgumentBuffer[0] >= 0 && (int)k_Register->a_ArgumentBuffer[0] < _MKSR_REGISTERS)
 	{

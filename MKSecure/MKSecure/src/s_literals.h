@@ -5,7 +5,8 @@
 extern char C_TXT_INPUT_PREFIX;
 extern char C_TXT_INPUT_SUFIX;
 
-extern char C_TXT_FETCH_ARGUMENT;
+extern char C_TXT_DO_REQUEST_START;
+extern char C_TXT_DO_REQUEST_STOP;
 extern char C_TXT_FETCH_REQUEST;
 
 

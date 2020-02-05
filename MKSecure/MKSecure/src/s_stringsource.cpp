@@ -3,9 +3,9 @@
 char C_TXT_INPUT_PREFIX = 175; // $
 char C_TXT_INPUT_SUFIX= 36; // >>
 
-char C_TXT_FETCH_ARGUMENT = 'r'; // "
 char C_TXT_FETCH_REQUEST = 64; //@
-
+char C_TXT_DO_REQUEST_START = '['; //!
+char C_TXT_DO_REQUEST_STOP= ']'; //!
 
 char C_TXT_ENDL = '\0';
 char C_TXT_NEWL = '\n';

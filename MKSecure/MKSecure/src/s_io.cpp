@@ -75,97 +75,200 @@ mks::vBufferReact(BUFFER_INFO bi_Buffer,HANDLE o_Hwnd)
 void __CC
 mks::vInputRoutine()
 {
-	if (this->i_Brachnes == 0)
-	{
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_SUFIX, _MKSC_COLOR_CMD, TRUE);
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->c_WinUsername, this->c_WinUsername.s_Length - 1, _MKSC_COLOR_NAME);
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_PREFIX, _MKSC_COLOR_CMD, TRUE);
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vReadInput(&this->c_InputRegister, &dw_KeyLength, _MKSC_COLOR_INPUT);
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
-	}
+	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_SUFIX, _MKSC_COLOR_CMD, TRUE);
+	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->c_WinUsername, this->c_WinUsername.s_Length - 1, _MKSC_COLOR_NAME);
+	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_PREFIX, _MKSC_COLOR_CMD, TRUE);
+	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vReadInput(&this->c_InputRegister, &dw_KeyLength, _MKSC_COLOR_INPUT);
+	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();	
 }
 
 BOOL __CC
 mks::vFetchInput()
 {
-	if (this->i_Brachnes == 0) 
-	{
-	
-	}
 	if (this->c_InputRegister.c_pStr[0] == C_TXT_FETCH_REQUEST) {
 
-		if (this->vFetchFile() == FALSE) 
+		if (this->vFetchFile() == FALSE)
 		{
 			this->dw_Key = _MKSS_UNKNOW;
 			this->dw_Msg = _MKSS_UNKNOWF;
 		}
-		else 
+		else
 		{
 			this->dw_Key = _MKSS_UNKNOW;
-			this->dw_Msg = _MKSS_GOOD;;
+			this->dw_Msg = _MKSS_GOOD;
 		}
 		return TRUE;
 	}
-	return TRUE;
-}
-BOOL __CC 
-mks::vCreateBranch(BRANCH** b_ppBranch)
-{
-	return TRUE;
-}
-BOOL __CC 
-mks::vFetchBranch(BRANCH * b_pBranch) 
-{
-	for (int i_ArgIndex = 0; i_ArgIndex < _MKSR_ARGUMENTS; i_ArgIndex++)
-	{
-		BOOL b_Done = TRUE;
-		for (int i_Fetches = 0; i_Fetches < o_RegisterFunctions[this->dw_Key].c_Arguments; i_Fetches++)
-		{
-			if (b_pBranch->b_ArgumentBuffer[i_Fetches] != NULL) 
-			{
-				b_Done = FALSE;
-			}
-		}
-		if (b_Done == FALSE) {
-			for (int i_Fetches = 0; i_Fetches < o_RegisterFunctions[this->dw_Key].c_Arguments; i_Fetches++)
-			{
-				if (b_pBranch->b_ArgumentBuffer[i_Fetches] != NULL) {
 
-					if (o_RegisterFunctions[b_pBranch->dw_Key].)
-						this->vFetchBranch(b_pBranch->b_ArgumentBuffer[i_Fetches]);
+	this->vCreateBranch(this->c_InputRegister,&this->b_pTree);
+
+	return TRUE;
+}
+BOOL __CC 
+mks::vCreateBranch(CSTR s_Text,BRANCH * b_pBranch)
+{
+	b_pBranch->dw_Key = vGetFunctionId(&s_Text);
+
+	for (int i_Start = _MKSS_REGFUNCTIONSIZE, i_Stop = 0,i_Arg = 0; i_Start < s_Text.s_Length; i_Start++)
+	{
+		i_Stop = 0;
+		if (s_Text.c_pStr[i_Start] == C_TXT_DO_REQUEST_START)
+		{
+			for (i_Stop = 1; i_Stop < s_Text.s_Length - i_Start; i_Stop++)
+			{
+				if (s_Text.c_pStr[i_Start + i_Stop] == C_TXT_DO_REQUEST_STOP)
+				{
+
+					break;
+				}
+			}
+			CSTR s_Arg(i_Stop);
+			for (int i_Index = 0; i_Index < s_Arg.s_Length; i_Index++)
+			{
+				s_Arg.c_pStr[i_Index] = s_Text.c_pStr[i_Start + i_Index];
+			}
+
+			b_pBranch->b_ArgumentBuffer[i_Arg] = (BRANCH*) malloc(sizeof(BRANCH));
+			if (b_pBranch->b_ArgumentBuffer[i_Arg] == NULL) 
+			{
+				return FALSE;
+			}
+
+			vCreateBranch(s_Arg, b_pBranch->b_ArgumentBuffer[i_Arg]);
+			s_Arg.vClean();
+
+			i_Start += i_Stop;
+			i_Arg++;
+		}else
+		if (s_Text.c_pStr[i_Start] == ' ')
+		{
+			for (i_Stop = 1; i_Stop < s_Text.s_Length - i_Start; i_Stop++)
+			{
+				CSTR s_Arg(i_Stop);
+				for (int i_Index = 0; i_Index < s_Arg.s_Length; i_Index++)
+				{
+					s_Arg.c_pStr[i_Index] = s_Text.c_pStr[i_Start + i_Index];
 				}
 
+				b_pBranch->a_ArgumentBufferValue[i_Arg] = (void*)vStringToInt(s_Arg, s_Arg.s_Length);
+
+				s_Arg.vClean();
+
+				i_Start += i_Stop;
+				i_Arg++;
 
 			}
 		}
-
-		if (o_RegisterFunctions[this->dw_Key].f_Register(&o_RegisterFunctions[this->dw_Key], this, b_pBranch->b_ArgumentBuffer[i_Fetches]) == TRUE) {
-			this->dw_Msg = _MKSS_GOOD;
-		}
-		else {
-			this->dw_Msg = _MKSS_FAILED;
-		}
-		
 	}
 	return TRUE;
 }
 BOOL __CC
-mks::vFetchOutput()
+mks::vGetFunctionId(CSTR * s_Text)
 {
-	this->vFetchBranch(this->b_pTree);
+	int i_TempSu = 0;
+	for (ushort s_KeyIndex = 0; s_KeyIndex < _MKSR_REGFUNCTIONS; s_KeyIndex++)
+	{
+		i_TempSu = 0;
+		for (ushort s_Index = 0; s_Index < _MKSS_REGFUNCTIONSIZE; s_Index++)
+		{
+			if (s_Text->c_pStr[s_Index] == o_RegisterFunctions[s_KeyIndex].c_Name[s_Index]) {
+				++i_TempSu;
+			}
+		}
+		if (i_TempSu == _MKSS_REGFUNCTIONSIZE - 1)
+		{
+			return s_KeyIndex;
+		}
+	}
+	return _MKSS_UNKNOW;
+}
+
+BOOL __CC 
+mks::vFetchBranch(BRANCH * b_pBranch) 
+{
+	BOOL b_Done = TRUE;
+	for (int i_Fetches = 0; i_Fetches < _MKSR_ARGUMENTS; i_Fetches++)
+	{
+		if (b_pBranch->b_ArgumentBuffer[i_Fetches] != NULL) b_Done = FALSE;
+	}
+	if (b_Done == FALSE) 
+	{
+		for (int i_Fetches = 0; i_Fetches < _MKSR_ARGUMENTS; i_Fetches++)
+		{
+			if (b_pBranch->b_ArgumentBuffer[i_Fetches] != NULL) {
+
+				if (this->vFetchBranch(b_pBranch->b_ArgumentBuffer[i_Fetches]) == FALSE)
+				{
+					return FALSE;
+				}
+				else
+				{
+					b_pBranch->a_ArgumentBufferValue[i_Fetches] = b_pBranch->b_ArgumentBuffer[i_Fetches]->a_ReturnBufferValue;
+					free(b_pBranch->b_ArgumentBuffer[i_Fetches]);
+					b_pBranch->b_ArgumentBuffer[i_Fetches] = NULL;
+				}
+			}
+		}
+	}
+
+	this->o_RegisterFunctions[b_pBranch->dw_Key].a_ArgumentBuffer = b_pBranch->a_ArgumentBufferValue;
+
+	if (o_RegisterFunctions[b_pBranch->dw_Key].f_Register(&o_RegisterFunctions[b_pBranch->dw_Key], this) == FALSE) 
+	{
+		return FALSE;
+	}
+
+	b_pBranch->a_ReturnBufferValue = this->o_RegisterFunctions[b_pBranch->dw_Key].a_ReturnBuffer;
+	
+	return TRUE;
+}
+BOOL __CC
+mks::vFetchOutput()
+{ 
+	LOG("Fetch");
+	system("pause");
+
+
+	if (this->vFetchBranch(&b_pTree) == FALSE)
+	{
+		LOG("Fetch Bad");
+		system("pause");
+
+		this->dw_Msg = _MKSS_FAILED;
+		return FALSE;
+	}
+
+	this->dw_Msg = _MKSS_GOOD;
 	return TRUE;
 }
 BOOL __CC
 mks::vFetchFile()
 {
+	FILE* f_pOpenFile;
 	CSTR s_Filepath(dw_KeyLength);
 	for (ushort s_Cursor = 0, s_Stepdown = 0; s_Cursor < dw_KeyLength+1; s_Cursor++)
 	{
 		s_Filepath.c_pStr[s_Cursor] = this->c_InputRegister.c_pStr[s_Cursor+1];
 	}
 	s_Filepath.c_pStr[dw_KeyLength - 1] = C_TXT_ENDL;
-	fopen_s(&this->f_pOpenFile,s_Filepath, "r");
-	if (this->f_pOpenFile == NULL) return FALSE;
+
+	fopen_s(&f_pOpenFile,s_Filepath, "r");
+	if (f_pOpenFile == NULL) return FALSE;
+	fseek(f_pOpenFile, 0L, SEEK_SET);
+
+	while(fscanf_s(f_pOpenFile, "%99[^\n]", this->c_InputRegister.c_pStr, this->c_InputRegister.s_Length)!=EOF)
+	{
+		this->dw_KeyLength = vTermLength(this->c_InputRegister.c_pStr);
+
+		LOG("READ: "<< dw_KeyLength<< "#"<< this->c_InputRegister.c_pStr << "#");
+		system("pause");
+
+		this->vFetchInput();
+		this->vFetchOutput();
+		this->vOutputRoutine();
+
+	}
+	fclose(f_pOpenFile);
 	s_Filepath.vClean();
 	return TRUE;
 }
@@ -190,27 +293,6 @@ mks::vOutputRoutine()
 	}
 	
 	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
-}
-
-BOOL __CC
-mks::vGetFunctionId(int i_Startindex)
-{
-	int i_TempSu = 0; 
-	for (ushort s_KeyIndex = 0; s_KeyIndex < _MKSR_REGFUNCTIONS; s_KeyIndex++)
-	{
-		i_TempSu = 0;
-		for (ushort s_Index = 0; s_Index < _MKSS_REGFUNCTIONSIZE; s_Index++)
-		{
-			if (c_InputRegister[i_Startindex+s_Index] == o_RegisterFunctions[s_KeyIndex].c_Name[s_Index]) {
-				++i_TempSu;
-			}		
-		}
-		if (i_TempSu == _MKSS_REGFUNCTIONSIZE-1)
-		{
-			return s_KeyIndex;
-		}
-	}
-	return _MKSS_UNKNOW;
 }
 
 BOOL __CC

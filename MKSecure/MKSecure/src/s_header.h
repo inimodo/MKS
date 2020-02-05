@@ -142,19 +142,21 @@ class mks_branch
 {
 public:
 	DWORD		dw_Key{0};
-
 	BRANCH*		b_ArgumentBuffer[_MKSR_ARGUMENTS];
+
 	ARGT		a_ArgumentBufferValue[_MKSR_ARGUMENTS];
+	ARGT		a_ReturnBufferValue;
 };
 
 class mks_func
 {
 public:
-	ARGT		a_ArgumentBuffer[_MKSR_ARGUMENTS];
+	ARGT*		a_ArgumentBuffer;
+	ARGT		a_ReturnBuffer;
 
 	char		c_Arguments,c_Return;
 	char*		c_Name;
-	BOOL		(*f_Register)(SFUNC*, MKS*,void*);
+	BOOL		(*f_Register)(SFUNC*, MKS*);
 };
 class mks 
 {
@@ -165,9 +167,7 @@ public:
 	int			i_ScreenBufferCount{ 0 };
 
 	BUFFER*		o_pScreenBuffer;
-	FILE*		f_pOpenFile;
-	int			i_Brachnes{0};
-	BRANCH*		b_pTree;
+	BRANCH		b_pTree;
 
 	HANDLE		o_HwndOutput{ 0 };
 	HANDLE		o_HwndInput{ 0 };
@@ -189,31 +189,31 @@ public:
 	BOOL  __CC	vFetchInput();
 	BOOL  __CC	vFetchFile();
 	BOOL  __CC	vFetchBranch(BRANCH *);
-	BOOL  __CC	vCreateBranch(BRANCH**);
+	BOOL  __CC	vCreateBranch(CSTR, BRANCH *);
 	BOOL  __CC	vFetchOutput();
 	void  __CC	vOutputRoutine();
 	
-	BOOL  __CC	vGetFunctionId(int);
+	BOOL  __CC	vGetFunctionId(CSTR*);
 
 	BOOL  __CC	vCleanup();
 };
 
 
 extern BOOL
-vRegister_break(SFUNC*, MKS*, void *);
+vRegister_break(SFUNC*, MKS*);
 extern BOOL	  
-vRegister_login(SFUNC*, MKS*, void *);
+vRegister_login(SFUNC*, MKS*);
 extern BOOL	   
-vRegister_wkdir(SFUNC*, MKS*, void *);
+vRegister_wkdir(SFUNC*, MKS*);
 extern BOOL	  
-vRegister_lttry(SFUNC*, MKS*, void *);
+vRegister_lttry(SFUNC*, MKS*);
 extern BOOL
-vRegister_clear(SFUNC*, MKS*, void *);
+vRegister_clear(SFUNC*, MKS*);
 extern BOOL
-vRegister_input(SFUNC*, MKS*, void *);
+vRegister_input(SFUNC*, MKS*);
 extern BOOL
-vRegister_lstbf(SFUNC*, MKS*, void *);
+vRegister_lstbf(SFUNC*, MKS*);
 extern BOOL
-vRegister_close(SFUNC*, MKS*, void *);
+vRegister_close(SFUNC*, MKS*);
 extern BOOL
-vRegister_regst(SFUNC*, MKS*, void *);
+vRegister_regst(SFUNC*, MKS*);
