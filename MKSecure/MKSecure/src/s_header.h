@@ -42,6 +42,7 @@
 #define _MKSR_REGFUNCTIONS 9
 
 #define _MKSS_UNKNOW 0xEEE
+#define _MKSS_KNOW 0xFAF
 #define _MKSS_UNKNOWF 0xFEF
 #define _MKSS_GOOD	 0xAAA
 #define _MKSS_FAILED 0xFFF
@@ -49,14 +50,14 @@
 #define _MKSS_BUFFERSIZE 64
 
 #define _MKSC_BACKGROUND (0)
-#define _MKSC_COLOR_FAILED ( FOREGROUND_RED )
+#define _MKSC_COLOR_FAILED 12
 #define _MKSC_COLOR_UNKNOW 11
-#define _MKSC_COLOR_GOOD ( FOREGROUND_GREEN )
-#define _MKSC_COLOR_CMD 7
+#define _MKSC_COLOR_GOOD 10
+#define _MKSC_COLOR_CMD 15
 #define _MKSC_COLOR_NAME 13
 #define _MKSC_COLOR_INPUT 15
-#define _MKSC_COLOR_OUTPUT (FOREGROUND_GREEN | FOREGROUND_RED)
-#define _MKSC_COLOR_BORDER 8
+#define _MKSC_COLOR_OUTPUT 14
+#define _MKSC_COLOR_BORDER 7
 
 
 typedef unsigned short ushort;
@@ -130,6 +131,7 @@ public:
 	BOOL __CC	vReadInput(CSTR*, LPDWORD, WORD,CHAR);
 	BOOL __CC	vWriteBuffer();
 	void __CC	vBreak();
+	void __CC	vTab(SHORT);
 	void __CC	vBufferClear();
 	void __CC	vSetCursor(COORD);
 	void __CC	vSetCursor(SHORT,SHORT);
@@ -190,8 +192,8 @@ public:
 	BOOL  __CC	vFetchFile();
 	BOOL  __CC	vFetchBranch(BRANCH *);
 	BOOL  __CC	vCreateBranch(CSTR, BRANCH *);
-	BOOL  __CC	vFetchOutput();
-	void  __CC	vOutputRoutine();
+
+	void  __CC	vPrintRegisterResult();
 	
 	BOOL  __CC	vGetFunctionId(CSTR*);
 

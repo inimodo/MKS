@@ -1,13 +1,16 @@
 #pragma once
 #define _MKSS_REGFUNCTIONSIZE 6
-#define _MKSS_MSGSIZE 20
+#define _MKSS_MSGSIZE 32
 
 extern char C_TXT_INPUT_PREFIX;
 extern char C_TXT_INPUT_SUFIX;
+extern char C_TXT_OUTPUT_PREFIX;
+extern char C_TXT_INFO_PREFIX;
 
 extern char C_TXT_DO_REQUEST_START;
 extern char C_TXT_DO_REQUEST_STOP;
 extern char C_TXT_FETCH_REQUEST;
+extern char C_TXT_REAL_REQUEST;
 
 
 extern char C_TXT_ENDL;
@@ -18,6 +21,11 @@ extern char C_MKSS_E_UNKNOWF[_MKSS_MSGSIZE];
 extern char C_MKSS_E_PERM[_MKSS_MSGSIZE];
 extern char C_MKSS_E_ERROR[_MKSS_MSGSIZE];
 extern char C_MKSS_E_GOOD[_MKSS_MSGSIZE];
+extern char C_MKSS_E_KNOWF[_MKSS_MSGSIZE];
+
+extern char C_MKSS_I_RPUSH[_MKSS_REGFUNCTIONSIZE];
+extern char C_MKSS_I_FILER[_MKSS_REGFUNCTIONSIZE];
+
 
 #define _MKSS_K_LOCK   0
 extern char C_MKSS_K_BREAK[_MKSS_REGFUNCTIONSIZE];

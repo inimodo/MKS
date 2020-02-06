@@ -61,6 +61,7 @@ vRegister_input(SFUNC* k_Register, MKS* mks_Pref)
 BOOL
 vRegister_lstbf(SFUNC* k_Register, MKS* mks_Pref)
 {
+	k_Register->a_ReturnBuffer = (ARGT)173;//(ARGT)mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER]+1;
 	return mks_Pref->o_pScreenBuffer[mks_Pref->b_Register[_MKSR_R_OUTPUTBUFFER]].vWriteOutput(mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER]+48, _MKSC_COLOR_OUTPUT,TRUE);
 }
 BOOL

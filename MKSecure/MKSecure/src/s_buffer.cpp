@@ -110,6 +110,12 @@ mks_buffer::vBreak()
 	this->dw_Cursor.X = 2;
 }
 void __CC
+mks_buffer::vTab(SHORT s_Tab)
+{
+	this->vSetCursor(s_Tab, 0);
+
+}
+void __CC
 mks_buffer::vBufferClear()
 {
 	this->vSetCursor({2,1});
