@@ -103,7 +103,7 @@ mks::vFetchInput()
 		return TRUE;
 	}
 
-	if (this->vCreateBranch(this->c_InputRegister, &this->b_pTree) == FALSE) 
+	if (this->vCreateBranch(0,this->dw_KeyLength, &this->b_pTree) == FALSE)
 	{
 		this->dw_Msg = _MKSS_UNKNOW;
 		return FALSE;
@@ -120,9 +120,9 @@ mks::vFetchInput()
 	return TRUE;
 }
 BOOL __CC 
-mks::vCreateBranch(CSTR s_Text,BRANCH * b_pBranch)
+mks::vCreateBranch(DWORD dw_Start,DWORD dw_Stop,BRANCH * b_pBranch)
 {
-	b_pBranch->dw_Key = vGetFunctionId(&s_Text);
+	b_pBranch->dw_Key = vGetFunctionId(dw_Start);
 	if (b_pBranch->dw_Key == _MKSS_UNKNOW)return FALSE;
 	b_pBranch->a_ReturnBufferValue = NULL;
 	for (int i_Index = 0; i_Index < _MKSR_ARGUMENTS; i_Index++)
@@ -131,38 +131,36 @@ mks::vCreateBranch(CSTR s_Text,BRANCH * b_pBranch)
 		b_pBranch->b_ArgumentBuffer[i_Index] = NULL;
 	}
 	if (o_RegisterFunctions[b_pBranch->dw_Key].c_Arguments == 0)return TRUE;
-	for (int i_Start = _MKSS_REGFUNCTIONSIZE-1, i_Stop = 0,i_Arg = 0; i_Start < s_Text.s_Length || i_Arg < o_RegisterFunctions[b_pBranch->dw_Key].c_Arguments; i_Start++)
+	for (int i_Start = _MKSS_REGFUNCTIONSIZE + dw_Start-1, i_Stop = 0,i_Arg = 0; i_Start < dw_Start+dw_Stop || i_Arg < o_RegisterFunctions[b_pBranch->dw_Key].c_Arguments; i_Start++)
 	{		
 		i_Stop = 0;
-		if (s_Text.c_pStr[i_Start] == C_TXT_DO_REQUEST_START)
+		if (this->c_InputRegister.c_pStr[i_Start] == C_TXT_DO_REQUEST_START)
 		{
-			for (i_Stop = 1; i_Stop < s_Text.s_Length - i_Start; i_Stop++)
+			for (i_Stop = 1; i_Stop < this->c_InputRegister.s_Length - i_Start; i_Stop++)
 			{
-				if (s_Text.c_pStr[i_Start + i_Stop] == C_TXT_DO_REQUEST_STOP)
+				if (this->c_InputRegister.c_pStr[i_Start + i_Stop] == C_TXT_DO_REQUEST_STOP)
 				{
 					break;
 				}
 			}
-			CSTR s_Arg(i_Stop-1);
-			for (int i_Index = 0; i_Index < s_Arg.s_Length; i_Index++)
-			{
-				s_Arg.c_pStr[i_Index] = s_Text.c_pStr[i_Start + i_Index + 1];
-			}
+			
+
 			b_pBranch->b_ArgumentBuffer[i_Arg] = (BRANCH*)malloc(sizeof(BRANCH));
 			if (b_pBranch->b_ArgumentBuffer[i_Arg] == NULL)
 			{
 				return FALSE;
 			}
-			vCreateBranch(s_Arg, b_pBranch->b_ArgumentBuffer[i_Arg]);
-			s_Arg.vClean();
+
+			vCreateBranch(i_Start+1,i_Stop, b_pBranch->b_ArgumentBuffer[i_Arg]);
 			i_Start += i_Stop;
 			i_Arg++;
+
 		}
-		if (s_Text.c_pStr[i_Start] == C_TXT_REAL_REQUEST && s_Text.c_pStr[i_Start+1] != C_TXT_DO_REQUEST_START)
-		{		
-			for (i_Stop = 1; i_Stop < (s_Text.s_Length - i_Start); i_Stop++)
+		if (this->c_InputRegister.c_pStr[i_Start] == C_TXT_REAL_REQUEST && this->c_InputRegister.c_pStr[i_Start+1] != C_TXT_DO_REQUEST_START)
+		{	
+			for (i_Stop = 1; i_Stop < (this->c_InputRegister.s_Length - i_Start); i_Stop++)
 			{
-				if (s_Text.c_pStr[i_Start + i_Stop] <= 33)
+				if (this->c_InputRegister.c_pStr[i_Start + i_Stop] <= 33)
 				{
 					break;
 				}
@@ -171,7 +169,7 @@ mks::vCreateBranch(CSTR s_Text,BRANCH * b_pBranch)
 			CSTR s_Arg(i_Stop);
 			for (int i_Index = 0; i_Index < s_Arg.s_Length; i_Index++)
 			{
-				s_Arg.c_pStr[i_Index] = s_Text.c_pStr[i_Start + i_Index + 1];
+				s_Arg.c_pStr[i_Index] = this->c_InputRegister.c_pStr[i_Start + i_Index + 1];
 			}
 			b_pBranch->a_ArgumentBufferValue[i_Arg] = (ARGT)vStringToInt(s_Arg, s_Arg.s_Length);
 			s_Arg.vClean();
@@ -179,10 +177,11 @@ mks::vCreateBranch(CSTR s_Text,BRANCH * b_pBranch)
 			i_Arg++;
 		}		
 	}
+
 	return TRUE;
 }
 BOOL __CC
-mks::vGetFunctionId(CSTR * s_Text)
+mks::vGetFunctionId(DWORD dw_Offset)
 {
 	int i_TempSu = 0;
 	for (ushort s_KeyIndex = 0; s_KeyIndex < _MKSR_REGFUNCTIONS; s_KeyIndex++)
@@ -190,7 +189,7 @@ mks::vGetFunctionId(CSTR * s_Text)
 		i_TempSu = 0;
 		for (ushort s_Index = 0; s_Index < _MKSS_REGFUNCTIONSIZE; s_Index++)
 		{
-			if (s_Text->c_pStr[s_Index] == this->o_RegisterFunctions[s_KeyIndex].c_Name[s_Index]) {
+			if (this->c_InputRegister.c_pStr[s_Index+ dw_Offset] == this->o_RegisterFunctions[s_KeyIndex].c_Name[s_Index]) {
 				++i_TempSu;
 			}
 		}
@@ -270,8 +269,7 @@ mks::vFetchFile()
 
 	while(fscanf_s(f_pOpenFile, "%99[^\n]", this->c_InputRegister.c_pStr, this->c_InputRegister.s_Length)!=EOF)
 	{
-		this->dw_KeyLength = vTermLength(this->c_InputRegister.c_pStr);
-		
+		this->dw_KeyLength = vTermLength(this->c_InputRegister.c_pStr);		
 		this->vFetchInput();
 
 	}
