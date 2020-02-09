@@ -8,7 +8,8 @@ int main()
 		o_Object.vAssetWarmup();
 		while (o_Object.b_Register[_MKSR_R_KEEPALIVE])
 		{
-			o_Object.vInputRoutine();
+			o_Object.vConsoleInput();
+			o_Object.vProcessInput();
 		} 
 	}
 	return o_Object.vCleanup();

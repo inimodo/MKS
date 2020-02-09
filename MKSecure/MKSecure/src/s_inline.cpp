@@ -31,7 +31,17 @@ vStringToInt(CSTR c_Input,DWORD dw_Size)
 	}
 	return  ull_Output;
 }
-inline void __CC
+inline int __CC
+vStringToInt(CSTR c_Input, DWORD dw_Size, DWORD dw_Offset)
+{
+	int ull_Output = 0;
+	for (int i_Index = 0; i_Index < dw_Size; i_Index++)
+	{
+		ull_Output += (int)(c_Input.c_pStr[i_Index+ dw_Offset] - (char)48)* vTenth(dw_Size - i_Index - 1);
+	}
+	return  ull_Output;
+}
+inline int __CC
 vIntToString(int i_Input, CSTR* c_Output)
 {
 	int i_Tenth{10};
@@ -55,4 +65,5 @@ vIntToString(int i_Input, CSTR* c_Output)
 	{
 		c_Output->c_pStr[i_Tenth - i_Index-1] = i_Result[i_Index] + 48;
 	}
+	return i_Tenth;
 }

@@ -1,5 +1,4 @@
-#include"s_header.h"(SFUNC* k_Register, MKS* mks_Pref)
-
+#include"s_header.h"
 BOOL 
 vRegister_break(SFUNC* k_Register, MKS* mks_Pref)
 {
@@ -13,7 +12,6 @@ vRegister_break(SFUNC* k_Register, MKS* mks_Pref)
 BOOL 
 vRegister_login(SFUNC* k_Register, MKS* mks_Pref)
 {
-
 	if ((int)k_Register->a_ArgumentBuffer[0] * (int)k_Register->a_ArgumentBuffer[1] == _MKS_REGKEY)
 	{
 		mks_Pref->b_Register[_MKSR_R_UNLOCKED] = TRUE;
@@ -61,7 +59,7 @@ vRegister_input(SFUNC* k_Register, MKS* mks_Pref)
 BOOL
 vRegister_lstbf(SFUNC* k_Register, MKS* mks_Pref)
 {
-	k_Register->a_ReturnBuffer = (ARGT)173;//(ARGT)mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER]+1;
+	k_Register->a_ReturnBuffer = (ARGT)137;//(ARGT)mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER];
 	return mks_Pref->o_pScreenBuffer[mks_Pref->b_Register[_MKSR_R_OUTPUTBUFFER]].vWriteOutput(mks_Pref->b_Register[_MKSR_R_REGISTERBUFFER]+48, _MKSC_COLOR_OUTPUT,TRUE);
 }
 BOOL

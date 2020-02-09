@@ -6,6 +6,9 @@ extern char C_TXT_INPUT_PREFIX;
 extern char C_TXT_INPUT_SUFIX;
 extern char C_TXT_OUTPUT_PREFIX;
 extern char C_TXT_INFO_PREFIX;
+extern char C_TXT_OUTPUT_SUFIX;
+extern char C_TXT_INFO_SUFIX;
+extern char C_TXT_INPUT_SUFIX;
 
 extern char C_TXT_DO_REQUEST_START;
 extern char C_TXT_DO_REQUEST_STOP;

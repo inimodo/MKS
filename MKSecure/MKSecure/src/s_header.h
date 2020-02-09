@@ -30,7 +30,8 @@ typedef class mks_branch BRANCH;
 extern inline int __CC	vTermLength(c_LPSTR);
 extern inline ULLI __CC vTenth(char);
 extern inline int __CC vStringToInt(CSTR, DWORD);
-extern inline void __CC vIntToString(int, CSTR*);
+extern inline int __CC vStringToInt(CSTR, DWORD,DWORD);
+extern inline int __CC vIntToString(int, CSTR*);
 
 class mks_str
 {
@@ -62,7 +63,6 @@ public:
 };
 struct mks_buffer_info {
 	COORD dw_Pos, dw_Size;
-	BOOL b_HasBorder;
 };
 
 
@@ -74,9 +74,8 @@ public:
 	COORD		dw_Size,dw_Cursor,dw_Pos;
 	HANDLE		o_Output;
 	SMALL_RECT	sm_Rect;
-	BOOL		b_Border;
 
-	BOOL __CC	vSetup(COORD, COORD, HANDLE, BOOL);
+	BOOL __CC	vSetup(COORD, COORD, HANDLE);
 	void __CC	vCleanup();
 
 	BOOL __CC	vWriteOutput(c_LPSTR, DWORD, WORD);
@@ -118,21 +117,24 @@ class mks
 {
 
 public:
-	BOOL		b_Register[_MKSR_REGISTERS]={1,0,0,1,-1,FALSE,0,0};
-	SFUNC		o_RegisterFunctions[_MKSR_REGFUNCTIONS];
-	int			i_ScreenBufferCount{ 0 };
-
-	BUFFER*		o_pScreenBuffer;
-	BRANCH		b_pTree;
-
 	HANDLE		o_HwndOutput{ 0 };
 	HANDLE		o_HwndInput{ 0 };
 
+	BOOL		b_Register[_MKSR_REGISTERS]={1,0,0,1,-1,FALSE,0,0};
+	SFUNC		o_RegisterFunctions[_MKSR_REGFUNCTIONS];
+
+	int			i_ScreenBufferCount{ 0 };
+	BUFFER*		o_pScreenBuffer;
+
+	BRANCH		b_pTree;
+
+
 	CSTR		c_WinUsername,c_SoftwareDir;
 
-	DWORD		dw_KeyLength{ 0 };
 	CSTR		c_InputRegister;
+	CSTR		c_OutputRegister;
 
+	DWORD		dw_KeyLength{ 0 };
 	DWORD		dw_Key{ _MKSS_UNKNOW };
 	DWORD		dw_Msg{ _MKSS_UNKNOW };
 
@@ -141,13 +143,14 @@ public:
 	BOOL  __CC	vBuffeWarmup();
 	int   __CC	vBufferReact(BUFFER_INFO, HANDLE);
 
-	void  __CC	vInputRoutine();
-	BOOL  __CC	vFetchInput();
-	BOOL  __CC	vFetchFile();
+	BOOL  __CC	vProcessInput();
+	BOOL  __CC	vProcessFile();
 	BOOL  __CC	vFetchBranch(BRANCH *);
 	BOOL  __CC	vCreateBranch( DWORD,DWORD,BRANCH *);
 
-	void  __CC	vPrintRegisterResult();
+	void  __CC	vConsoleInput();
+	void  __CC	vConsoleOutput();
+	void  __CC	vConsoleInputRequest(BOOL);
 	
 	BOOL  __CC	vGetFunctionId(DWORD);
 

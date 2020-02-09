@@ -12,10 +12,9 @@ mks_buffer::vCleanup()
 	free(this->c_pBuffer);
 }
 BOOL __CC	
-mks_buffer::vSetup(COORD dw_Loc, COORD dw_Dim, HANDLE o_Hwnd,BOOL b_Hasborder)
+mks_buffer::vSetup(COORD dw_Loc, COORD dw_Dim, HANDLE o_Hwnd)
 {
-	this->b_Border = b_Hasborder;
-	this->dw_Cursor = { 2,1 };
+	this->dw_Cursor = { 0,0 };
 	this->dw_Pos = {0,0};
 	this->dw_Size = dw_Dim;
 	this->o_Output = o_Hwnd;
@@ -103,53 +102,16 @@ mks_buffer::vWriteOutput( CHAR c_Msg, WORD w_Color, BOOL b_Add)
 	this->vSetCursor(b_Add,0);
 	return this->vWriteBuffer();
 }
-void __CC
-mks_buffer::vBreak()
-{
-	this->vSetCursor(0,1);
-	this->dw_Cursor.X = 2;
-}
-void __CC
-mks_buffer::vTab(SHORT s_Tab)
-{
-	this->vSetCursor(s_Tab, 0);
 
-}
 void __CC
 mks_buffer::vBufferClear()
 {
-	this->vSetCursor({2,1});
+	this->vSetCursor({ 0,0 });
 	for (int i_Index = 0; i_Index < this->dw_Size.X * this->dw_Size.Y; i_Index++)
 	{
 		this->c_pBuffer[i_Index].Attributes = _MKSC_BACKGROUND | _MKSC_COLOR_BORDER;
 		this->c_pBuffer[i_Index].Char.AsciiChar = 0;
-		if (this->b_Border) {
-			if ((i_Index % this->dw_Size.X) == 0 || (i_Index % this->dw_Size.X) == this->dw_Size.X - 1)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)186;
-			}
-			if (i_Index < this->dw_Size.X || i_Index >= (this->dw_Size.Y - 1) * this->dw_Size.X)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)205;
-			}
-			if (i_Index == 0)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)201;
 
-			}
-			if (i_Index == this->dw_Size.X - 1)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)187;
-			}
-			if (i_Index == (this->dw_Size.Y - 1) * this->dw_Size.X)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)200;
-			}
-			if (i_Index == (this->dw_Size.Y * this->dw_Size.X) - 1)
-			{
-				this->c_pBuffer[i_Index].Char.AsciiChar = (char)188;
-			}
-		}
 	}
 	this->vWriteBuffer();
 }
@@ -166,11 +128,23 @@ mks_buffer::vSetCursor(SHORT s_X, SHORT s_Y)
 	if (this->dw_Cursor.X >= this->dw_Size.X - 1) 
 	{
 		this->dw_Cursor.Y++;
-		this->dw_Cursor.X = 2;
+		this->dw_Cursor.X = 0;
 	}
 	if (this->dw_Cursor.Y >= this->dw_Size.Y - 1)
 	{
-		this->dw_Cursor.Y = 1;
+		this->dw_Cursor.Y = 0;
 		this->vBufferClear();
 	}
+}
+void __CC
+mks_buffer::vBreak()
+{
+	this->vSetCursor(0, 1);
+	this->dw_Cursor.X = 0;
+}
+void __CC
+mks_buffer::vTab(SHORT s_Tab)
+{
+	this->vSetCursor(s_Tab, 0);
+
 }
