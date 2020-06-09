@@ -1,16 +1,40 @@
-#include "s_header.h"
+#define _MKS_REQ_CONSOLE_ACCESS
+#define _MKS_REQ_SYSTEM_ACCESS
+#define _MKS_REQ_DATA_ACCESS
+#include "header\s_functions.h"
 
-MKS o_Object;
-int main()
+
+INT32		mks::data::i_Status;
+CSTR		mks::data::c_WinUsername, mks::data::c_SoftwareDir;
+PATH		mks::data::p_WorkDirectory;
+MSTSTACK	mks::data::mst_Openfiles;
+
+INT32 main(INT32 i_Args,char ** c_ppArguments)
 {
-	if (o_Object.vBuffeWarmup())
-	{
-		o_Object.vAssetWarmup();
-		while (o_Object.b_Register[_MKSR_R_KEEPALIVE])
+	if (Initialize())
+	{	
+		CSTR c_InputRegister(MAX_PATH);
+		while (i_Status == M_STATUS_KEEPALIVE)
 		{
-			o_Object.vConsoleInput();
-			o_Object.vProcessInput();
+			INT32 i_Msg,i_Length;
+			UpdateStatus();
+			WaitConsoleInput(&c_InputRegister,&i_Length);
+			if (c_InputRegister.c_pStr[0] == M_KW_MOVEPATH)
+			{
+				PathFeedback(FetchPath(&c_InputRegister));
+				continue;
+			}
+			else
+			{
+				BRANCH b_pTree;
+				if (CreateBranch(&c_InputRegister,0, i_Length, &b_pTree) == FALSE)
+				{
+					ResolveError();
+					continue;
+				}
+				FetchBranch(&b_pTree);
+			}
 		} 
 	}
-	return o_Object.vCleanup();
+	return 0;
 }

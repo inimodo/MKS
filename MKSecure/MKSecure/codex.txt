@@ -1,0 +1,14 @@
+FUNCTION	PARAM	RETURN	CODEX
+
+crwpush		1		FALSE	1:['#N':(N=[File Id @ crwpeek]) / 'T':(T=[Extension without dot]) / '-':(All Files in Folder)]
+crwpeek		0		FALSE	
+foclose		0		FALSE	
+bkeygen		1		TRUE	1:['N':(N=[Key Digits])] RET:(Key Generated)
+mstlist		0		FALSE	
+mstopen		1		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])]
+mstexit		0		FALSE	
+mstsave		1		FALSE	1:['a':(All open Files) / 'l':(Just Local File), '-':(All open Files)]
+mstrmve		1		FALSE	1:['#N':(N=[File Id @ crwpeek]) / 'T':(T=[Extension without dot]) / '-':(All Files in Folder)]
+encrypt		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 2:['T':(T=[B62Key])]
+decrypt		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 2:['T':(T=[B62Key])]
+

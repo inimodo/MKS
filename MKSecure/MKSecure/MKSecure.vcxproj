@@ -76,6 +76,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -87,6 +88,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -100,6 +102,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,6 +118,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -123,19 +127,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\s_buffer.cpp" />
+    <ClCompile Include="src\essentials\s_type_fstack.cpp" />
+    <ClCompile Include="src\essentials\s_type_mststack.cpp" />
+    <ClCompile Include="src\essentials\s_type_mstfile.cpp" />
+    <ClCompile Include="src\essentials\s_type_path.cpp" />
+    <ClCompile Include="src\functions\s_f_decrypt.cpp" />
+    <ClCompile Include="src\functions\s_f_encrypt.cpp" />
+    <ClCompile Include="src\functions\s_f_foclose.cpp" />
+    <ClCompile Include="src\functions\s_f_mstempt.cpp" />
+    <ClCompile Include="src\functions\s_f_mstexit.cpp" />
+    <ClCompile Include="src\functions\s_f_mstshow.cpp" />
+    <ClCompile Include="src\functions\s_f_mstopen.cpp" />
+    <ClCompile Include="src\functions\s_f_crwpeek.cpp" />
+    <ClCompile Include="src\functions\s_f_bkeygen.cpp" />
+    <ClCompile Include="src\functions\s_f_crwpush.cpp" />
+    <ClCompile Include="src\functions\s_f_mstsave.cpp" />
+    <ClCompile Include="src\s_misc.cpp" />
+    <ClCompile Include="src\essentials\s_type_buffer.cpp" />
     <ClCompile Include="src\s_iofetcher.cpp" />
     <ClCompile Include="src\s_console.cpp" />
-    <ClCompile Include="src\s_registerfunc.cpp" />
-    <ClCompile Include="src\s_string.cpp" />
-    <ClCompile Include="src\s_stringsource.cpp" />
-    <ClCompile Include="src\s_inline.cpp" />
+    <ClCompile Include="src\s_assets.cpp" />
+    <ClCompile Include="src\essentials\s_type_string.cpp" />
     <ClCompile Include="src\s_main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\s_constants.h" />
-    <ClInclude Include="src\s_header.h" />
-    <ClInclude Include="src\s_literals.h" />
+    <ClInclude Include="src\header\s_functions.h" />
+    <ClInclude Include="src\header\s_includes.h" />
+    <ClInclude Include="src\header\s_structs.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="codex.txt" />
+    <Text Include="src\temp.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

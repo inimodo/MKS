@@ -1,0 +1,68 @@
+b_pBranch->i_Key = GetFunctionId(i_Startpos);
+	if (b_pBranch->i_Key == M_UNKNOW)return FALSE;
+	b_pBranch->a_ReturnBufferValue = NULL;
+	for (INT32 i_Index = 0; i_Index < M_FUNC_COUNT_ARGUMENTS; i_Index++)
+	{
+		b_pBranch->a_ArgumentBufferValue[i_Index] = NULL;
+		b_pBranch->b_ArgumentBuffer[i_Index] = NULL;
+	}
+	if (a_Assets_Functions[b_pBranch->i_Key].c_Arguments == 0)return TRUE;
+	INT32 i_Start = M_FUNC_KEYWORDLENGTH + i_Startpos - 1, i_Stop = 0, i_Arg = 0;
+	for ( ; i_Start < i_Start+ i_Stoppos || i_Arg < a_Assets_Functions[b_pBranch->i_Key].c_Arguments; i_Start++)
+	{		
+		i_Stop = 0;
+		if (c_InputRegister.c_pStr[i_Start] == M_KW_SPACE) 
+		{
+			i_Start++;
+
+			if (c_InputRegister.c_pStr[i_Start] == M_KW_STARTFUNC)
+			{
+				for (i_Stop = 1; i_Stop < c_InputRegister.s_Length - i_Start; i_Stop++)
+				{
+					if (c_InputRegister.c_pStr[i_Start + i_Stop] == M_KW_STOPFUNC)
+					{
+						break;
+					}
+				}
+				b_pBranch->b_ArgumentBuffer[i_Arg] = (BRANCH*)malloc(sizeof(BRANCH));
+				if (b_pBranch->b_ArgumentBuffer[i_Arg] == NULL)
+				{
+					return FALSE;
+				}
+
+				CreateBranch(i_Start + 1, i_Stop, b_pBranch->b_ArgumentBuffer[i_Arg]);
+				i_Start += i_Stop;
+				i_Arg++;
+				continue;
+			}
+			if (c_InputRegister.c_pStr[i_Start] != M_KW_STARTFUNC)
+			{
+				if (c_InputRegister.c_pStr[i_Start] == M_KW_INPUT)
+				{
+					RequestConsoleInput(FALSE);
+					b_pBranch->a_ArgumentBufferValue[i_Arg] = (ARGT)StringToInt(c_OutputFunction, i_KeyLength, 0);		
+				}
+				else 
+				{
+					for (i_Stop = 1; i_Stop < (c_InputRegister.s_Length - i_Start); i_Stop++)
+					{
+						if (c_InputRegister.c_pStr[i_Start + i_Stop] <= M_KW_SPACE)
+						{
+							break;
+						}
+					}
+					b_pBranch->a_ArgumentBufferValue[i_Arg] = malloc(i_Stop +2);
+					char* c_Referenz = (char*)b_pBranch->a_ArgumentBufferValue[i_Arg];
+					StringToStringInt(i_Stop, c_Referenz);
+					for (INT16 i_Charpos = 0; i_Charpos < i_Stop; i_Charpos++)
+					{
+						c_Referenz[i_Charpos+2] = c_InputRegister.c_pStr[i_Start + i_Charpos];
+					}
+				}
+				i_Start += i_Stop-1;
+				i_Arg++;
+				continue;
+			}
+		}
+	}
+	return TRUE;

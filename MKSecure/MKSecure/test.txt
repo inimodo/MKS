@@ -1,2 +1,2 @@
-login [lstbf] ?
-break
+clear 0
+close

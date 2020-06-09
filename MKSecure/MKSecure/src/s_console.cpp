@@ -1,202 +1,205 @@
-#include "s_header.h"
+#define _MKS_REQ_DATA_ACCESS
+#include "header\s_functions.h"
 
+//Console//_MKS_REQ_DATA_ACCESS
 
 void __CC
-mks::vConsoleInput()
+mks::console::WaitConsoleInput(CSTR * c_InputRegister,INT32 * i_Length)
 {
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_SUFIX, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->c_WinUsername, this->c_WinUsername.s_Length - 1, _MKSC_COLOR_NAME);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_REAL_REQUEST, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_PREFIX, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_REAL_REQUEST, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vReadInput(&this->c_InputRegister, &dw_KeyLength, _MKSC_COLOR_INPUT);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
-
+	a_Assets_Buffer[M_BUFFER_REQUEST].BufferClear();
+	a_Assets_Buffer[M_BUFFER_REQUEST].WriteChar('~', M_COLOR_NAME);
+	a_Assets_Buffer[M_BUFFER_REQUEST].WriteBuffer();
+	a_Assets_Buffer[M_BUFFER_REQUEST].ReadInput(c_InputRegister, i_Length, M_COLOR_INPUT);
 }
 void __CC
-mks::vConsoleOutput()
+mks::console::PathFeedback(TMSG i_Msg)
 {
-
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(195, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(196, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(194, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(175, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->o_RegisterFunctions[this->dw_Key].c_Name, _MKSS_REGFUNCTIONSIZE - 1, _MKSC_COLOR_CMD);
-
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vTab(1);
-	this->dw_KeyLength = vIntToString(this->dw_Msg,&this->c_OutputRegister);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->c_OutputRegister, this->dw_KeyLength, _MKSC_COLOR_BORDER);
-
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(124, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vTab(1);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(192, _MKSC_COLOR_CMD, TRUE);
-
-
-	if (this->dw_Msg == _MKSS_GOOD)
-	{
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)C_MKSS_E_GOOD, _MKSS_MSGSIZE - 1, _MKSC_COLOR_GOOD);
-	}
-	if (this->dw_Msg == _MKSS_FAILED)
-	{
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)C_MKSS_E_ERROR, _MKSS_MSGSIZE - 1, _MKSC_COLOR_FAILED);
-	}
-	if (this->dw_Msg == _MKSS_UNKNOWF)
-	{
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)C_MKSS_E_UNKNOWF, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
-	}
-	else if (this->dw_Msg == _MKSS_UNKNOW)
-	{
-		this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)C_MKSS_E_UNKNOW, _MKSS_MSGSIZE - 1, _MKSC_COLOR_UNKNOW);
-	}
-
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteChar(63, M_COLOR_INDEXES);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(a_Assets_Messages[i_Msg], a_Assets_MColors[i_Msg], M_MSGSIZE);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+void __CC
+mks::console::ResolveError()
+{
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteChar('!', M_COLOR_INDEXES);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Tab(1);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(a_Assets_Messages[M_MESSAGES_QUERRY_UNKNOW], a_Assets_MColors[M_MESSAGES_QUERRY_UNKNOW], M_MSGSIZE);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
 }
 
 void __CC
-mks::vConsoleInputRequest(BOOL b_Diskret)
+mks::console::FuncHeader( BRANCH * b_pBranch)
 {
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(195, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(168, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput((c_LPSTR)this->o_RegisterFunctions[this->dw_Key].c_Name, _MKSS_REGFUNCTIONSIZE - 1, _MKSC_COLOR_CMD);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vTab(1);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vWriteOutput(C_TXT_INPUT_PREFIX, _MKSC_COLOR_CMD, TRUE);
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vTab(1);
-
-
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vReadInput(&this->c_OutputRegister, &dw_KeyLength, _MKSC_COLOR_INPUT,'*');
-	this->o_pScreenBuffer[this->b_Register[_MKSR_R_REGISTERBUFFER]].vBreak();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteChar('~', M_COLOR_INDEXES);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(a_Assets_Functions[b_pBranch->i_Key].c_Name, M_COLOR_FUNCTION, M_FUNC_KWLENRAW);
+	for (char i_Index = 0; i_Index < a_Assets_Functions[b_pBranch->i_Key].c_Arguments; i_Index++)
+	{
+		a_Assets_Buffer[M_BUFFER_FEEDBACK].Tab(1);
+		a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(b_pBranch->a_Args[i_Index].c_pStr, M_COLOR_FUNCTION, b_pBranch->a_Args[i_Index].s_Length);
+	}
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
 }
 
-int   __CC
-mks::vBufferReact(BUFFER_INFO bi_Buffer, HANDLE o_Hwnd)
+
+
+void __CC
+mks::console::FuncFeedback(TMSG i_Msg,BRANCH * b_pBranch)
 {
-	++this->i_ScreenBufferCount;
-	if (this->i_ScreenBufferCount == 0)
+
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteChar(63, M_COLOR_INDEXES);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Tab(1);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(a_Assets_Messages[i_Msg], a_Assets_MColors[i_Msg], M_MSGSIZE);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+
+
+void __CC
+mks::console::PlotTree(FSTACK * o_List)
+{
+	for (INT16 i_Index = 0; i_Index < o_List->i_Files; i_Index++)
 	{
-		this->o_pScreenBuffer = (BUFFER*)malloc(sizeof(BUFFER) * this->i_ScreenBufferCount);
+		FileInfo(i_Index,o_List, M_BUFFER_FEEDBACK);
+	}	
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+
+void __CC
+mks::console::PlotMessage(INT16 i_Value, INT16 i_Digits, BOOL b_Newline)
+{
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(i_Value, i_Digits, M_COLOR_SYMPOL);
+	
+	if (b_Newline)
+	{
+		a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
 	}
-	else
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+
+void __CC
+mks::console::PlotMessage(char * c_pMessage, INT16 i_Length, BOOL b_Newline)
+{
+	if (c_pMessage != NULL) 
 	{
-		void*  v_Safe = realloc(this->o_pScreenBuffer, sizeof(BUFFER) * this->i_ScreenBufferCount);
-		if (v_Safe != NULL)
+		if (i_Length == 0)i_Length = TermLength(c_pMessage);
+		a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteOutput(c_pMessage, M_COLOR_SYMPOL, i_Length);
+	}
+	if (b_Newline)
+	{
+		a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
+	}
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+
+void __CC
+mks::console::FileSize(DWORD i_Size,WORD i_Color,INT16 i_Buffer)
+{
+	char c_Prefix[3] = {'k','m','g'};
+	a_Assets_Buffer[i_Buffer].WriteChar('(', M_COLOR_SYMPOL);
+	for (DWORD i_Pos = 0,i_Sizing = 1000; i_Pos < 3; i_Pos++, i_Sizing*=1000)
+	{
+		if ((i_Size / i_Sizing) < 1000) 
 		{
-			this->o_pScreenBuffer = (BUFFER*)v_Safe;
+			a_Assets_Buffer[i_Buffer].WriteOutput(i_Size / i_Sizing,3, i_Color);
+			a_Assets_Buffer[i_Buffer].WriteChar(c_Prefix[i_Pos], i_Color);
+			break;
 		}
 	}
-	this->o_pScreenBuffer[this->i_ScreenBufferCount - 1].vSetup(bi_Buffer.dw_Pos, bi_Buffer.dw_Size, o_Hwnd);
+	a_Assets_Buffer[i_Buffer].WriteChar('B', i_Color);
+	a_Assets_Buffer[i_Buffer].WriteChar(')', M_COLOR_SYMPOL);
+}
+void __CC
+mks::console::MstFileInfo(INT16 i_Index, MSTSTACK * f_Stack, INT16 i_Buffer)
+{
+	a_Assets_Buffer[i_Buffer].WriteChar(195, M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteChar('[', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteOutput(i_Index,3, M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[i_Buffer].WriteChar(']', M_COLOR_SYMPOL);
+	mks::console::FileSize(f_Stack->mst_pStack[i_Index].GetFs(), M_COLOR_SYMPOL_UPLIGHT, i_Buffer);
+	a_Assets_Buffer[i_Buffer].WriteChar(':', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteOutput(f_Stack->mst_pStack[i_Index].fp_Filepath.c_Filename ,M_COLOR_FUNCTION_OUTPUT, f_Stack->mst_pStack[i_Index].fp_Filepath.c_Filename.s_Length);
+	a_Assets_Buffer[i_Buffer].WriteChar('/', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteOutput(f_Stack->mst_pStack[i_Index].fs_Filestack.i_Files,3, M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[i_Buffer].Break();
+}
+void __CC
+mks::console::FileInfo(INT16 i_Index, FSTACK * f_Stack, INT16 i_Buffer)
+{
 
-	int i_Height, i_Width, i_Highest_X = 0, i_Highest_Y = 0;
-	for (int i_Index = 0; i_Index < this->i_ScreenBufferCount; i_Index++)
+	a_Assets_Buffer[i_Buffer].WriteChar(195, M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteChar('[', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteOutput(i_Index,3, M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[i_Buffer].WriteChar(']', M_COLOR_SYMPOL);
+	mks::console::FileSize(f_Stack->fp_pStack[i_Index].o_Data.nFileSizeLow, M_COLOR_SYMPOL_UPLIGHT, i_Buffer);
+	a_Assets_Buffer[i_Buffer].WriteChar(':', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].WriteOutput(f_Stack->fp_pStack[i_Index].c_Filename.c_pStr, M_COLOR_FUNCTION_OUTPUT, f_Stack->fp_pStack[i_Index].c_Filename.s_Length);	
+	if(f_Stack->fp_pStack[i_Index].o_Data.nFileSizeLow == 0)
+		a_Assets_Buffer[i_Buffer].WriteChar('\\', M_COLOR_SYMPOL);
+	a_Assets_Buffer[i_Buffer].Break();
+}
+void __CC
+mks::console::DisplayMstStackContent()
+{
+	for (INT16 i_Index = 0; i_Index < mst_Openfiles.i_Files; i_Index++)
 	{
-		i_Width = this->o_pScreenBuffer[i_Index].sm_Rect.Right + 1;
-		i_Height = this->o_pScreenBuffer[i_Index].sm_Rect.Bottom + 1;
-		if (i_Width > i_Highest_X) {
-			i_Highest_X = i_Width;
-		}
-		if (i_Height > i_Highest_Y) {
-			i_Highest_Y = i_Height;
-
-		}
-
+		mks::console::MstFileInfo(i_Index, &mst_Openfiles, M_BUFFER_FEEDBACK);
 	}
-	COORD dw_Size = { i_Highest_X,i_Highest_Y };
-	SMALL_RECT sm_Rect = { 0,0, i_Highest_X - 1,i_Highest_Y - 1 };
-
-	SetConsoleScreenBufferSize(this->o_HwndOutput, dw_Size);
-	SetConsoleWindowInfo(this->o_HwndOutput, 1, &sm_Rect);
-
-	return (this->i_ScreenBufferCount - 1);
+	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
+}
+void __CC
+mks::console::DisplayFileStackContent(INT16 i_File)
+{
+	a_Assets_Buffer[M_BUFFER_MSTFILE].BufferClear();
+	a_Assets_Buffer[M_BUFFER_MSTFILE].WriteChar('@', M_COLOR_SYMPOL);
+	mks::console::FileSize(mst_Openfiles.mst_pStack[i_File].GetFs(), M_COLOR_SYMPOL_UPLIGHT, M_BUFFER_MSTFILE);
+	a_Assets_Buffer[M_BUFFER_MSTFILE].WriteChar(':', M_COLOR_SYMPOL);
+	a_Assets_Buffer[M_BUFFER_MSTFILE].WriteOutput(mst_Openfiles.mst_pStack[i_File].fp_Filepath.c_Filename.c_pStr, M_COLOR_FUNCTION_OUTPUT, mst_Openfiles.mst_pStack[i_File].fp_Filepath.c_Filename.s_Length);
+	a_Assets_Buffer[M_BUFFER_MSTFILE].Break();
+	for (INT16 i_Index = 0; i_Index < mst_Openfiles.mst_pStack[i_File].fs_Filestack.i_Files; i_Index++)
+	{
+		FileInfo(i_Index, &mst_Openfiles.mst_pStack[i_File].fs_Filestack, M_BUFFER_MSTFILE);
+	}
+	a_Assets_Buffer[M_BUFFER_MSTFILE].WriteBuffer();
 }
 
-BOOL __CC
-mks::vBuffeWarmup()
+void __CC 
+mks::console::UpdateStatus()
 {
-	this->c_WinUsername.vSet(UNLEN);
-	this->c_SoftwareDir.vSet(MAX_PATH);
-	this->c_InputRegister.vSet(_MKSS_BUFFERSIZE);
-	this->c_OutputRegister.vSet(_MKSS_BUFFERSIZE);
+	a_Assets_Buffer[M_BUFFER_PATH].BufferClear();
+	a_Assets_Buffer[M_BUFFER_PATH].WriteChar('[', M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[M_BUFFER_PATH].WriteOutput(c_WinUsername, M_COLOR_NAME, c_WinUsername.s_Length - 1);
+	a_Assets_Buffer[M_BUFFER_PATH].WriteChar(']', M_COLOR_SYMPOL_UPLIGHT);
+	p_WorkDirectory.Build(&c_SoftwareDir);
+	a_Assets_Buffer[M_BUFFER_PATH].WriteOutput(c_SoftwareDir, M_COLOR_INPUT, c_SoftwareDir.s_Length);
+	if (mst_Openfiles.i_Files != 0)
+		a_Assets_Buffer[M_BUFFER_PATH].WriteOutput(mst_Openfiles.GetFilestack()->fp_Filepath.c_Filename, M_COLOR_NAME, mst_Openfiles.GetFilestack()->fp_Filepath.c_Filename.s_Length);
+	a_Assets_Buffer[M_BUFFER_PATH].WriteBuffer();
 
-	o_HwndOutput = GetStdHandle(STD_OUTPUT_HANDLE);
-	o_HwndInput = GetStdHandle(STD_INPUT_HANDLE);
-	if (o_HwndOutput == NULL || o_HwndInput == NULL) {
-		return FALSE;
-	}
-	if (GetUserNameA(this->c_WinUsername, (LPDWORD)& this->c_WinUsername.s_Length) == NULL)
+	a_Assets_Buffer[M_BUFFER_STATUS].BufferClear();
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput((LPSTR)"filestream: ", M_COLOR_SYMPOL_HIGHLIGHT, 12);
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteChar('(', M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput(mst_Openfiles.i_Sellected,2, M_COLOR_NAME);
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteChar('/', M_COLOR_SYMPOL_UPLIGHT);
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput(mst_Openfiles.i_Files,2, M_COLOR_NAME);
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteChar(')', M_COLOR_SYMPOL_UPLIGHT);
+
+	if (mst_Openfiles.i_Files != 0) 
 	{
-		return FALSE;
+		a_Assets_Buffer[M_BUFFER_STATUS].Tab(1);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteChar('@', M_COLOR_SYMPOL);
+		a_Assets_Buffer[M_BUFFER_STATUS].Tab(1);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput(mst_Openfiles.GetFilestack()->fp_Filepath.c_Filename, M_COLOR_NAME, mst_Openfiles.GetFilestack()->fp_Filepath.c_Filename.s_Length);		
+		a_Assets_Buffer[M_BUFFER_STATUS].Tab(1);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteChar('(', M_COLOR_SYMPOL);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput((LPSTR)"locates:", M_COLOR_SYMPOL_HIGHLIGHT, 8);
+		a_Assets_Buffer[M_BUFFER_STATUS].Tab(1);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput(mst_Openfiles.GetFilestack()->fs_Filestack.i_Files,3, M_COLOR_NAME);
+		a_Assets_Buffer[M_BUFFER_STATUS].Tab(1);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteOutput((LPSTR)"items", M_COLOR_SYMPOL_HIGHLIGHT, 5);
+		a_Assets_Buffer[M_BUFFER_STATUS].WriteChar(')', M_COLOR_SYMPOL);
 	}
-	if (_getcwd(this->c_SoftwareDir, this->c_SoftwareDir.s_Length) == NULL)
-	{
-		return FALSE;
-	}
-	this->o_pScreenBuffer = (BUFFER*)malloc(sizeof(BUFFER)*this->i_ScreenBufferCount);
-	if (this->o_pScreenBuffer == NULL)
-	{
-		return FALSE;
-	}
-	this->b_Register[_MKSR_R_REGISTERBUFFER] = this->vBufferReact(_MKSD_REGISTERBUFFER, o_HwndOutput);
-	this->b_Register[_MKSR_R_OUTPUTBUFFER] = this->vBufferReact(_MKSD_OUTPUTBUFFER, o_HwndOutput);
-
-	return TRUE;
-}
-
-void __ST
-mks::vAssetWarmup()
-{
-	this->o_RegisterFunctions[_MKSS_K_LOCK].f_Register = vRegister_break;
-	this->o_RegisterFunctions[_MKSS_K_LOCK].c_Name = C_MKSS_K_BREAK;
-	this->o_RegisterFunctions[_MKSS_K_LOCK].c_Arguments = 0;
-	this->o_RegisterFunctions[_MKSS_K_LOCK].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_LOGGIN].f_Register = vRegister_login;
-	this->o_RegisterFunctions[_MKSS_K_LOGGIN].c_Name = C_MKSS_K_LOGIN;
-	this->o_RegisterFunctions[_MKSS_K_LOGGIN].c_Arguments = 2;
-	this->o_RegisterFunctions[_MKSS_K_LOGGIN].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_LTTRY].f_Register = vRegister_lttry;
-	this->o_RegisterFunctions[_MKSS_K_LTTRY].c_Name = C_MKSS_K_LTTRY;
-	this->o_RegisterFunctions[_MKSS_K_LTTRY].c_Arguments = 0;
-	this->o_RegisterFunctions[_MKSS_K_LTTRY].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_WKDIR].f_Register = vRegister_wkdir;
-	this->o_RegisterFunctions[_MKSS_K_WKDIR].c_Name = C_MKSS_K_WKDIR;
-	this->o_RegisterFunctions[_MKSS_K_WKDIR].c_Arguments = 0;
-	this->o_RegisterFunctions[_MKSS_K_WKDIR].c_Return = TRUE;
-
-	this->o_RegisterFunctions[_MKSS_K_CLEAR].f_Register = vRegister_clear;
-	this->o_RegisterFunctions[_MKSS_K_CLEAR].c_Name = C_MKSS_K_CLEAR;
-	this->o_RegisterFunctions[_MKSS_K_CLEAR].c_Arguments = 1;
-	this->o_RegisterFunctions[_MKSS_K_CLEAR].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_INPUT].f_Register = vRegister_input;
-	this->o_RegisterFunctions[_MKSS_K_INPUT].c_Name = C_MKSS_K_INPUT;
-	this->o_RegisterFunctions[_MKSS_K_INPUT].c_Arguments = 1;
-	this->o_RegisterFunctions[_MKSS_K_INPUT].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_LSTBF].f_Register = vRegister_lstbf;
-	this->o_RegisterFunctions[_MKSS_K_LSTBF].c_Name = C_MKSS_K_LSTBF;
-	this->o_RegisterFunctions[_MKSS_K_LSTBF].c_Arguments = 0;
-	this->o_RegisterFunctions[_MKSS_K_LSTBF].c_Return = TRUE;
-
-	this->o_RegisterFunctions[_MKSS_K_CLOSE].f_Register = vRegister_close;
-	this->o_RegisterFunctions[_MKSS_K_CLOSE].c_Name = C_MKSS_K_CLOSE;
-	this->o_RegisterFunctions[_MKSS_K_CLOSE].c_Arguments = 1;
-	this->o_RegisterFunctions[_MKSS_K_CLOSE].c_Return = FALSE;
-
-	this->o_RegisterFunctions[_MKSS_K_REGST].f_Register = vRegister_regst;
-	this->o_RegisterFunctions[_MKSS_K_REGST].c_Name = C_MKSS_K_REGST;
-	this->o_RegisterFunctions[_MKSS_K_REGST].c_Arguments = 0;
-	this->o_RegisterFunctions[_MKSS_K_REGST].c_Return = FALSE;
-}
-
-
-BOOL __CC
-mks::vCleanup()
-{
-	this->c_SoftwareDir.vClean();
-	this->c_WinUsername.vClean();
-	this->c_InputRegister.vClean();
-	free(this->o_pScreenBuffer);
-	return 1;
+	a_Assets_Buffer[M_BUFFER_STATUS].WriteBuffer();
 }
