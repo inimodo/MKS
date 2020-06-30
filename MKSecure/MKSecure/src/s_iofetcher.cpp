@@ -4,6 +4,8 @@
 
 //Sytem
 
+
+
 BOOL __CC
 mks::system::GetFunctionId(CSTR* c_InputRegister,INT32 i_Offset)
 {
@@ -130,7 +132,8 @@ mks::system::FetchBranch(BRANCH * b_pBranch)
 		if (b_pBranch->b_ArgBuf[i_Fetches] != NULL)
 		{	
 			mks::system::FetchBranch(b_pBranch->b_ArgBuf[i_Fetches]);
-			b_pBranch->a_Args[i_Fetches] = b_pBranch->b_ArgBuf[i_Fetches]->a_ArgBufReturn;
+			b_pBranch->a_Args[i_Fetches].Copy(&b_pBranch->b_ArgBuf[i_Fetches]->a_ArgBufReturn);
+			b_pBranch->b_ArgBuf[i_Fetches]->a_ArgBufReturn.Clean();
 			free(b_pBranch->b_ArgBuf[i_Fetches]);		
 		}
 	}

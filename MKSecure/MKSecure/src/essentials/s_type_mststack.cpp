@@ -29,6 +29,7 @@ mststack::Open(CSTR* c_pFilename)
 		this->mst_pStack[this->i_Files - 1].Open(c_pFilename);
 	}
 }
+
 MSTFILE* __CC
 mststack::GetFilestack(INT16 i_Index) 
 {

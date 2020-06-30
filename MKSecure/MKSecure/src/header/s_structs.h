@@ -15,6 +15,7 @@ Contains all Structs an Class DefINT32ionss
 typedef const LPSTR CLPSTR; 
 typedef void* ARGT;
 typedef INT16 TMSG;
+typedef unsigned long long int QWORD;
 
 typedef class str
 {
@@ -22,9 +23,7 @@ public:
 	str(CLPSTR);
 	str();
 	str(INT16);
-
 	~str();
-
 	INT16		s_Length{ 0 };
 	INT16		s_MemLen{ 0 };
 	LPSTR		c_pStr{ 0 };
@@ -92,7 +91,7 @@ typedef struct buffer_info {
 typedef struct branch
 {
 	INT32		i_Key;
-	branch*	b_ArgBuf[M_FUNC_ARGS];
+	branch*		b_ArgBuf[M_FUNC_ARGS];
 	CSTR		a_Args[M_FUNC_ARGS];
 	CSTR		a_ArgBufReturn;
 }BRANCH;
@@ -180,6 +179,7 @@ public:
 	void __CC Open(CSTR* c_pFilename);
 	void __CC Close(INT16 i_Index);
 	void __CC Closeall();
+	INT16 __CC IsOpen(CSTR * c_pFilename);
 
 	MSTFILE* __CC GetFilestack(INT16 i_Index = -1);
 }MSTSTACK;

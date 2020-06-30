@@ -26,7 +26,7 @@ INT32 main(INT32 i_Args,char ** c_ppArguments)
 			}
 			else
 			{
-				BRANCH b_pTree;
+				BRANCH  b_pTree;
 				if (CreateBranch(&c_InputRegister,0, i_Length, &b_pTree) == FALSE)
 				{
 					ResolveError();

@@ -48,37 +48,40 @@
     <ClCompile Include="src\essentials\s_type_mststack.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_foclose.cpp">
+    <ClCompile Include="src\functions\f_bkeygen.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_mstempt.cpp">
+    <ClCompile Include="src\functions\f_crwpeek.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_mstexit.cpp">
+    <ClCompile Include="src\functions\f_crwpush.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_bkeygen.cpp">
+    <ClCompile Include="src\functions\f_decrypt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_mstshow.cpp">
+    <ClCompile Include="src\functions\f_encrypt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_crwpeek.cpp">
+    <ClCompile Include="src\functions\f_foclose.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_crwpush.cpp">
+    <ClCompile Include="src\functions\f_mstempt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_mstopen.cpp">
+    <ClCompile Include="src\functions\f_mstexit.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_decrypt.cpp">
+    <ClCompile Include="src\functions\f_mstopen.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_encrypt.cpp">
+    <ClCompile Include="src\functions\f_mstsave.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
-    <ClCompile Include="src\functions\s_f_mstsave.cpp">
+    <ClCompile Include="src\functions\f_mstshow.cpp">
+      <Filter>Quelldateien</Filter>
+    </ClCompile>
+    <ClCompile Include="src\functions\sf_encrypt.cpp">
       <Filter>Quelldateien</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,6 +93,9 @@
       <Filter>Headerdateien</Filter>
     </ClInclude>
     <ClInclude Include="src\header\s_structs.h">
+      <Filter>Headerdateien</Filter>
+    </ClInclude>
+    <ClInclude Include="src\functions\sf_sharedfunctions.h">
       <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>

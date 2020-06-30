@@ -43,8 +43,6 @@ mks::console::FuncHeader( BRANCH * b_pBranch)
 	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
 }
 
-
-
 void __CC
 mks::console::FuncFeedback(TMSG i_Msg,BRANCH * b_pBranch)
 {
@@ -55,7 +53,6 @@ mks::console::FuncFeedback(TMSG i_Msg,BRANCH * b_pBranch)
 	a_Assets_Buffer[M_BUFFER_FEEDBACK].Break();
 	a_Assets_Buffer[M_BUFFER_FEEDBACK].WriteBuffer();
 }
-
 
 void __CC
 mks::console::PlotTree(FSTACK * o_List)

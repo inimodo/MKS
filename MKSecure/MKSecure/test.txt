@@ -1,2 +1,0 @@
-clear 0
-close

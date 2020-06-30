@@ -14,7 +14,7 @@ str::~str()
 	free(this->c_pStr);
 }
 str::str(INT16 s_Length)
-	: s_Length(s_Length), s_MemLen(s_Length), c_pStr(NULL)
+	: s_Length(0), c_pStr(NULL), s_MemLen(0)
 {
 	this->Set(s_Length);
 }
@@ -22,6 +22,7 @@ str::str(INT16 s_Length)
 void __CC
 str::Clean()
 {
+	LOG("BIG");
 	free(this->c_pStr);
 	this->c_pStr = NULL;
 	this->s_Length = 0;

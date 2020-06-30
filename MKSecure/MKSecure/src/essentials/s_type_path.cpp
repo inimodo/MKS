@@ -108,6 +108,7 @@ path::BuildWithFile(CSTR * c_pFilename)
 		}
 		i_Offset += this->c_pFolders[i_Folder].s_Length;
 		c_Output->c_pStr[i_Offset++] = M_BASL;
+		LOG("C: "<< i_Offset <<" # " << this->c_pFolders[i_Folder].s_Length);
 	}
 	for (INT16 i_Index = 0; i_Index < c_pFilename->s_Length; i_Index++)
 	{
@@ -116,6 +117,9 @@ path::BuildWithFile(CSTR * c_pFilename)
 	i_Offset += c_pFilename->s_Length;
 	c_Output->c_pStr[i_Offset] = M_ENDL;
 	c_Output->s_Length = i_Offset;
+
+	LOG("PING: "<<c_Output->s_Length << " # " << c_Output->c_pStr);
+	STOP;
 	return c_Output;
 }
 
@@ -162,6 +166,8 @@ fpath::BuildFilePath(CSTR * c_pPath)
 	}
 	i_Offset += c_Filename.s_Length;
 	c_pPath->c_pStr[i_Offset] = M_ENDL;
+	LOG(c_pPath->c_pStr);
+	STOP;
 }
 
 void __CC

@@ -20,6 +20,7 @@ mstfile::Load()
 				this->fs_Filestack.fp_pStack[i_Index].c_pFolders[i_FolderIndex] = CSTR();
 				this->fs_Filestack.fp_pStack[i_Index].c_pFolders[i_FolderIndex].Set(MAX_PATH);
 				this->i_FileSize += _read(this->i_FileDescriptor, this->fs_Filestack.fp_pStack[i_Index].c_pFolders[i_FolderIndex].c_pStr, MAX_PATH);
+				this->fs_Filestack.fp_pStack[i_Index].c_pFolders[i_FolderIndex].s_Length = this->fs_Filestack.fp_pStack[i_Index].c_pFolders[i_FolderIndex].MeasureLength();
 			}
 			this->fs_Filestack.fp_pStack[i_Index].c_Filename.Set(MAX_PATH);
 			this->i_FileSize += _read(this->i_FileDescriptor, this->fs_Filestack.fp_pStack[i_Index].c_Filename, MAX_PATH);

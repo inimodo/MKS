@@ -131,17 +131,18 @@
     <ClCompile Include="src\essentials\s_type_mststack.cpp" />
     <ClCompile Include="src\essentials\s_type_mstfile.cpp" />
     <ClCompile Include="src\essentials\s_type_path.cpp" />
-    <ClCompile Include="src\functions\s_f_decrypt.cpp" />
-    <ClCompile Include="src\functions\s_f_encrypt.cpp" />
-    <ClCompile Include="src\functions\s_f_foclose.cpp" />
-    <ClCompile Include="src\functions\s_f_mstempt.cpp" />
-    <ClCompile Include="src\functions\s_f_mstexit.cpp" />
-    <ClCompile Include="src\functions\s_f_mstshow.cpp" />
-    <ClCompile Include="src\functions\s_f_mstopen.cpp" />
-    <ClCompile Include="src\functions\s_f_crwpeek.cpp" />
-    <ClCompile Include="src\functions\s_f_bkeygen.cpp" />
-    <ClCompile Include="src\functions\s_f_crwpush.cpp" />
-    <ClCompile Include="src\functions\s_f_mstsave.cpp" />
+    <ClCompile Include="src\functions\f_decrypt.cpp" />
+    <ClCompile Include="src\functions\f_encrypt.cpp" />
+    <ClCompile Include="src\functions\f_foclose.cpp" />
+    <ClCompile Include="src\functions\f_mstempt.cpp" />
+    <ClCompile Include="src\functions\f_mstexit.cpp" />
+    <ClCompile Include="src\functions\f_mstshow.cpp" />
+    <ClCompile Include="src\functions\f_mstopen.cpp" />
+    <ClCompile Include="src\functions\f_crwpeek.cpp" />
+    <ClCompile Include="src\functions\f_bkeygen.cpp" />
+    <ClCompile Include="src\functions\f_crwpush.cpp" />
+    <ClCompile Include="src\functions\f_mstsave.cpp" />
+    <ClCompile Include="src\functions\sf_encrypt.cpp" />
     <ClCompile Include="src\s_misc.cpp" />
     <ClCompile Include="src\essentials\s_type_buffer.cpp" />
     <ClCompile Include="src\s_iofetcher.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="src\s_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\functions\sf_sharedfunctions.h" />
     <ClInclude Include="src\header\s_functions.h" />
     <ClInclude Include="src\header\s_includes.h" />
     <ClInclude Include="src\header\s_structs.h" />
