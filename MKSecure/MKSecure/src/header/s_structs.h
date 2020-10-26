@@ -176,6 +176,7 @@ public:
 	MSTFILE * mst_pStack;
 	INT16 i_MemSize{ 0 }, i_Files{ 0 }, i_Sellected{0};
 
+	INT16 __CC FindFileId(CSTR* c_pFilename);
 	void __CC Open(CSTR* c_pFilename);
 	void __CC Close(INT16 i_Index);
 	void __CC Closeall();

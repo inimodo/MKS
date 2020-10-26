@@ -19,6 +19,12 @@ INT32 main(INT32 i_Args,char ** c_ppArguments)
 			INT32 i_Msg,i_Length;
 			UpdateStatus();
 			WaitConsoleInput(&c_InputRegister,&i_Length);
+
+			LOG(c_InputRegister.c_pStr);
+			LOG(i_Length);
+			LOG(c_InputRegister.s_Length);
+			LOG(c_InputRegister.s_MemLen);
+			STOP;
 			if (c_InputRegister.c_pStr[0] == M_KW_MOVEPATH)
 			{
 				PathFeedback(FetchPath(&c_InputRegister));

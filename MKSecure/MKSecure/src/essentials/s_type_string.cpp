@@ -22,7 +22,6 @@ str::str(INT16 s_Length)
 void __CC
 str::Clean()
 {
-	LOG("BIG");
 	free(this->c_pStr);
 	this->c_pStr = NULL;
 	this->s_Length = 0;
@@ -33,7 +32,7 @@ str::Set(INT16 s_Length)
 {
 	this->Clean();
 	this->c_pStr = (LPSTR)malloc(s_Length+1);
-	this->s_Length = s_Length;
+	this->s_Length = 0;
 	this->s_MemLen = s_Length+1;
 }
 void __CC
@@ -98,37 +97,36 @@ str::CopyAll(str * c_pRef)
 	this->s_Length = this->MeasureLength();
 }
 
-void __CC
-str::Append(CSTR c_pAdd)
-{
-	if (c_pAdd.s_Length == 0)return;
-	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd.s_Length);
-	if (v_Codex != NULL) {
-		this->c_pStr = (LPSTR)v_Codex;
-		for (INT16 i_StrPos = this->s_Length - 1; i_StrPos < this->s_Length + c_pAdd.s_Length; i_StrPos++)
-		{
-			this->c_pStr[i_StrPos] = c_pAdd.c_pStr[i_StrPos - (s_Length - 1)];
-		}
-		this->c_pStr[s_Length + c_pAdd.s_Length] = M_ENDL;
-		this->s_Length += c_pAdd.s_Length;
-	}
-	else
-	{
-		free(this->c_pStr);
-	}
-}
+
 void __CC
 str::Append(CSTR * c_pAdd)
 {
 	if (c_pAdd->s_Length == 0)return;
-	void* v_Codex = realloc(this->c_pStr, this->s_Length + c_pAdd->s_Length + 1);
-	if (v_Codex != NULL) {
-		this->c_pStr = (LPSTR)v_Codex;
-		for (INT16 i_StrPos = this->s_Length - 1; i_StrPos < this->s_Length + c_pAdd->s_Length; i_StrPos++)
-		{
-			this->c_pStr[i_StrPos] = c_pAdd->c_pStr[i_StrPos - (s_Length - 1)];
+
+	if (this->s_MemLen < this->s_Length + c_pAdd->s_Length) {
+		char* v_Codex = (char*)malloc(this->s_Length + c_pAdd->s_Length + 1);
+		if (v_Codex != NULL) {
+			for (INT16 i_Index = 0; i_Index < this->s_Length; i_Index++)
+			{
+				v_Codex[i_Index] = this->c_pStr[i_Index];
+			}
+			for (INT16 i_StrPos = 0; i_StrPos <  c_pAdd->s_Length; i_StrPos++)
+			{
+				v_Codex[this->s_Length+i_StrPos] = c_pAdd->c_pStr[i_StrPos];
+			}
+			free(this->c_pStr);
+			this->c_pStr = (LPSTR)v_Codex;
+			this->c_pStr[this->s_Length + c_pAdd->s_Length] = M_ENDL;
+			this->s_Length += c_pAdd->s_Length;
+			this->s_MemLen = this->s_Length;
 		}
-		this->c_pStr[s_Length + c_pAdd->s_Length] = M_ENDL;
+	}else
+	{
+		for (INT16 i_StrPos = 0; i_StrPos <  c_pAdd->s_Length; i_StrPos++)
+		{
+			this->c_pStr[this->s_Length + i_StrPos] = c_pAdd->c_pStr[i_StrPos];
+		}
+		this->c_pStr[this->s_Length + c_pAdd->s_Length] = M_ENDL;
 		this->s_Length += c_pAdd->s_Length;
 	}
 }
@@ -137,21 +135,36 @@ str::Append(CLPSTR c_pAdd)
 {
 	if (this->c_pStr == NULL)return;
 	INT16 s_AddLen = TermLength(c_pAdd);
+	if (this->s_MemLen < this->s_Length + s_AddLen) {
+		char * c_pCodex = (char*)malloc(this->s_Length + s_AddLen + 1);
+		if (c_pCodex != NULL)
+		{
+			for (INT16 i_StrPos = 0; i_StrPos < this->s_Length; i_StrPos++)
+			{
+				c_pCodex[i_StrPos] = this->c_pStr[i_StrPos];
+			}
+			free(this->c_pStr);
+			for (INT16 i_StrPos = 0; i_StrPos < s_AddLen; i_StrPos++)
+			{
+				c_pCodex[i_StrPos + this->s_Length] = c_pAdd[i_StrPos];
+			}
+			//c_pCodex[this->s_Length + s_AddLen] = M_ENDL;
+			//this->c_pStr = c_pCodex;
+			//this->s_Length += s_AddLen;
+			//this->s_MemLen = this->s_Length + 1;
 
-	char * c_pCodex = (char*)malloc( this->s_Length + s_AddLen + 1);
-	if (c_pCodex != NULL)
-	{
-		for (INT16 i_StrPos = 0; i_StrPos < this->s_Length; i_StrPos++)
-		{
-			c_pCodex[i_StrPos] = this->c_pStr[i_StrPos];
+			this->c_pStr = (LPSTR)c_pCodex;
+			this->c_pStr[this->s_Length + s_AddLen] = M_ENDL;
+			this->s_Length += s_AddLen;
+			this->s_MemLen = this->s_Length;
 		}
-		free(this->c_pStr);
-		for (INT16 i_StrPos = this->s_Length; i_StrPos < this->s_Length + s_AddLen; i_StrPos++)
+	}
+	else {
+		for (INT16 i_StrPos = 0; i_StrPos < s_AddLen; i_StrPos++)
 		{
-			c_pCodex[i_StrPos] = c_pAdd[i_StrPos - (this->s_Length )];
+			this->c_pStr[this->s_Length + i_StrPos] = c_pAdd[i_StrPos];
 		}
-		c_pCodex[this->s_Length + s_AddLen] = M_ENDL;
-		this->c_pStr = c_pCodex;
+		this->c_pStr[this->s_Length + s_AddLen] = M_ENDL;
 		this->s_Length += s_AddLen;
 	}
 }

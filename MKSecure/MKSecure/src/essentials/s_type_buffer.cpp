@@ -31,12 +31,13 @@ buffer::Setup(COORD i_Loc, COORD i_Dim, WORD i_Backcolor)
 BOOL __CC
 buffer::ReadInput(CSTR* c_Buffer, INT32 * i_pLength,WORD w_Color)
 {
-	for ((*i_pLength) = 0; (*i_pLength) < c_Buffer->s_Length; (*i_pLength)++)
+	for ((*i_pLength) = 0; (*i_pLength) < c_Buffer->s_MemLen; (*i_pLength)++)
 	{
 		c_Buffer->c_pStr[(*i_pLength)] = _getch();
 		if (c_Buffer->c_pStr[(*i_pLength)] == 13)
 		{
 			c_Buffer->c_pStr[(*i_pLength)] = M_ENDL;
+			c_Buffer->s_Length = *i_pLength;
 			return TRUE;
 		}
 		if (c_Buffer->c_pStr[(*i_pLength)] == 8)
@@ -61,7 +62,7 @@ buffer::ReadInput(CSTR* c_Buffer, INT32 * i_pLength,WORD w_Color)
 BOOL __CC
 buffer::ReadInput(CSTR* c_Buffer, INT32* i_pLength, WORD w_Color,CHAR c_Passchar)
 {
-	for ((*i_pLength) = 0; (*i_pLength) < c_Buffer->s_Length; (*i_pLength)++)
+	for ((*i_pLength) = 0; (*i_pLength) < c_Buffer->s_MemLen; (*i_pLength)++)
 	{
 		c_Buffer->c_pStr[(*i_pLength)] = _getch();
 		if (c_Buffer->c_pStr[(*i_pLength)] == 13)

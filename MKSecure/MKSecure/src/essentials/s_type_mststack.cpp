@@ -3,6 +3,13 @@
 void __CC
 mststack::Open(CSTR* c_pFilename)
 {
+
+	INT16 i_MatchIndex = this->FindFileId(c_pFilename);
+	if (i_MatchIndex != -1) 
+	{
+		this->i_Sellected = i_MatchIndex;
+		return;
+	}
 	if (this->i_MemSize == this->i_Files)
 	{
 		MSTFILE * v_pPointer = (MSTFILE*)malloc(sizeof(MSTFILE)*(this->i_MemSize + 1));
@@ -71,4 +78,22 @@ mststack::~mststack()
 		this->mst_pStack[i_Index].Close();
 	}
 	this->i_Files = 0;
+}
+INT16 __CC 
+mststack::FindFileId(CSTR* c_pFilename)
+{
+	for (INT16 i_FileIndex = 0; i_FileIndex < this->i_Files; i_FileIndex++)
+	{
+		CSTR * c_Filepath = this->mst_pStack[i_FileIndex].fp_Filepath.BuildWithFile(&this->mst_pStack[i_FileIndex].fp_Filepath.c_Filename);
+		if (c_Filepath->s_Length != c_pFilename->s_Length)continue;
+		for (INT16 i_CharIndex = 0,i_MatchCount = 0; i_CharIndex < c_pFilename->s_Length; i_CharIndex++)
+		{
+			if (c_Filepath->c_pStr[i_CharIndex] == c_pFilename->c_pStr[i_CharIndex])i_MatchCount++;
+			else break;
+			if (i_MatchCount == c_pFilename->s_Length-1)return i_FileIndex;
+		}
+		c_Filepath->Clean();
+		free(c_Filepath);
+	}
+	return -1;
 }

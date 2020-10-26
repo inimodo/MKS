@@ -22,7 +22,6 @@ mks::functions::crwpeek(BRANCH * b_pBranch)
 	do {
 		o_Stack.Push(c_Folder.c_pStr, o_FileData.cFileName);
 		o_Stack.fp_pStack[o_Stack.i_Files - 1].o_Data = o_FileData;
-
 	} while (FindNextFileA(o_Filehandle, &o_FileData) != 0);
 	PlotTree(&o_Stack);
 	FindClose(o_Filehandle);

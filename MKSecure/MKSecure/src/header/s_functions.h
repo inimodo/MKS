@@ -38,8 +38,13 @@ namespace mks
 		extern void __CC	FuncHeader(BRANCH * b_pBranch);
 		extern void __CC	FileInfo(INT16 i_Index, FSTACK * f_Stack, INT16 i_Buffer);
 		extern void __CC	ResolveError();
-		extern void __CC	PlotMessage(char * c_pMessage, INT16 i_Length, BOOL b_Newline);
-		extern void __CC	PlotMessage(INT16 i_Value, INT16 i_Digits, BOOL b_Newline);
+
+		extern void __CC	PlotBreak();
+		extern void __CC	PlotHeader(BRANCH * b_pBranch);
+		extern void __CC	PlotMessage(char * c_pMessage, INT16 i_Length);
+		extern void __CC	PlotMessage(INT16 i_Value, INT16 i_Digits);
+		extern void __CC	PlotMessage(DWORD i_Value);
+
 		extern void __CC	UpdateStatus();
 		extern void __CC	FuncStackHeader(BRANCH *);
 		extern void __CC	DisplayFileStackContent(INT16 i_File);
@@ -52,6 +57,7 @@ namespace mks
 	{
 		extern TMSG __CC	crwpush(BRANCH*);
 		extern TMSG __CC	crwpeek(BRANCH*);
+		extern TMSG __CC	crwseek(BRANCH*);
 		extern TMSG __CC	foclose(BRANCH*);
 		extern TMSG __CC	bkeygen(BRANCH*);
 		extern TMSG __CC	mstlist(BRANCH*);
@@ -61,6 +67,8 @@ namespace mks
 		extern TMSG __CC	mstrmve(BRANCH*);
 		extern TMSG __CC	encrypt(BRANCH*);
 		extern TMSG __CC	decrypt(BRANCH*);
+		extern TMSG __CC	packint(BRANCH*);
+		extern TMSG __CC	packout(BRANCH*);
 	}
 }
 

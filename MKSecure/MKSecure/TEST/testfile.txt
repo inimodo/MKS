@@ -12,12 +12,5 @@ mstsave		1		FALSE	1:['a':(All open Files) / 'l':(Just Local File), '-':(All open
 mstrmve		1		FALSE	1:['#N':(N=[File Id @ crwpeek]) / 'T':(T=[Extension without dot]) / '-':(All Files in Folder)]
 encrypt		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 2:['T':(T=[B62Key])]
 decrypt		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 2:['T':(T=[B62Key])]
-packint		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 
-packout		2		FALSE	1:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename])] 2:['#N':(N=[File Id @ mstlist]) / 'T':(T=[filename]) / '-':(All Files in Folder)]
 
 
-
-ToDO:
-Make Function Console Output 
-Function Return Redo
-Variables

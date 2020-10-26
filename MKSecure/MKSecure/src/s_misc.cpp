@@ -21,9 +21,11 @@ mks::system::Initialize()
 
 	c_WinUsername.Set(UNLEN);
 	c_SoftwareDir.Set(MAX_PATH);
+	c_WinUsername.s_Length = UNLEN;
+	if (GetUserNameA(c_WinUsername.c_pStr, (LPDWORD)& c_WinUsername.s_Length) == NULL) return FALSE;
+	c_WinUsername.s_Length--;
 
-	if (GetUserNameA(c_WinUsername, (LPDWORD)& c_WinUsername.s_Length) == NULL) return FALSE;
-	if (_getcwd(c_SoftwareDir, MAX_PATH) == NULL) return FALSE;
+	if (_getcwd(c_SoftwareDir.c_pStr, MAX_PATH) == NULL) return FALSE;
 	INT32 i_TempLength = TermLength(c_SoftwareDir.c_pStr);
 	if (c_SoftwareDir.c_pStr[i_TempLength - 1] != M_BASL)
 	{
@@ -32,7 +34,6 @@ mks::system::Initialize()
 	}
 
 	p_WorkDirectory.DisolvePath(c_SoftwareDir.c_pStr);
-	AddScreenBuffer(M_PATH_BUFFER, M_BUFFER_PATH);
 	AddScreenBuffer(M_FEEDBACK_BUFFER, M_BUFFER_FEEDBACK);
 	AddScreenBuffer(M_MSTFILE_BUFFER, M_BUFFER_MSTFILE);
 	AddScreenBuffer(M_REQUEST_BUFFER, M_BUFFER_REQUEST);

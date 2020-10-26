@@ -34,12 +34,11 @@ void __CC
 fstack::Pop(INT16 i_Pos)
 {
 	this->fp_pStack[i_Pos].Clean();
-
-	for (INT16 i_Index = i_Pos; i_Index < this->i_Files - 1; i_Index++)
+	this->i_Files--;
+	for (INT16 i_Index = i_Pos; i_Index < this->i_Files; i_Index++)
 	{
 		this->fp_pStack[i_Index] = this->fp_pStack[i_Index + 1];
 	}
-	this->i_Files--;
 }
 
 void __CC
